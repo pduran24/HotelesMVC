@@ -12,8 +12,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * Configuración de seguridad de la aplicación.
- * Define las reglas de autorización y autenticación.
+ * Configuración de seguridad de la aplicación Web MVC.
+ * Implementa autenticación basada en formularios y sesiones.
  */
 @Configuration
 @EnableWebSecurity
@@ -28,37 +28,21 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+        http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/**").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/**").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/**").authenticated()
-                        .anyRequest().permitAll()
-                ).httpBasic(basic -> {
-                    basic.authenticationEntryPoint(customAuthenticationEntryPoint());
-                });
+                        .requestMatchers("/", "/hoteles", "login").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/hoteles", true)
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/hoteles?logout")
+                        .permitAll()
+                );
         return http.build();
-    }
-
-    /**
-     * Define un punto de entrada de autenticación personalizado para manejar errores 401.
-     *
-     * @return AuthenticationEntryPoint personalizado.
-     */
-    @Bean
-    public AuthenticationEntryPoint customAuthenticationEntryPoint() {
-        return (request, response, e) -> {
-            response.setContentType("application/json");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            ErrorResponseDTO error = new ErrorResponseDTO(
-                    "Usuario no autorizado",
-                    "El usuario y contraseña no coinciden o no tienes permisos.",
-                    401
-            );
-            ObjectMapper mapper = new ObjectMapper();
-            response.getWriter().write(mapper.writeValueAsString(error));
-        };
     }
 }
