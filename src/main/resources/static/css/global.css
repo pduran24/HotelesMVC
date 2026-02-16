@@ -1,0 +1,56 @@
+/* Colores rústicos de montaña */
+:root {
+    --madera-oscura: #3e2723;
+    --madera-clara: #8d6e63;
+    --naranja-fuego: #d84315;
+    --verde-pino: #2e7d32;
+    --fondo-oscuro: #121212;
+    --tarjeta-oscura: #1e1e1e;
+}
+
+body {
+    background-color: var(--fondo-oscuro);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Personalización de la barra de navegación */
+.navbar-rustica {
+    background-color: var(--madera-oscura) !important;
+    border-bottom: 3px solid var(--naranja-fuego);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: #fff !important;
+}
+
+/* Estilo para las tarjetas de los hoteles */
+.card-hotel {
+    background-color: var(--tarjeta-oscura);
+    border: 1px solid var(--madera-clara);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hotel:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(216, 67, 21, 0.2);
+    border-color: var(--naranja-fuego);
+}
+
+/* Botones con estilo cálido/fuego */
+.btn-rustico {
+    background-color: var(--naranja-fuego);
+    color: white;
+    border: none;
+}
+
+.btn-rustico:hover {
+    background-color: #bf360c;
+    color: white;
+}
+
+.precio-badge {
+    background-color: var(--verde-pino);
+    font-size: 1.1rem;
+}
