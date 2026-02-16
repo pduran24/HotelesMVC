@@ -24,6 +24,9 @@
     <div th:if="${param.logout}" class="alert alert-success" role="alert" style="background-color: var(--verde-pino); color: white; border: none;">
         Has cerrado sesión correctamente.
     </div>
+    <div th:if="${param.registrado}" class="alert alert-success" style="background-color: var(--verde-pino); color: white; border: none;">
+        ¡Cuenta creada con éxito! Ya puedes iniciar sesión.
+    </div>
 
     <form th:action="@{/login}" method="post">
         <div class="mb-3">
@@ -38,7 +41,10 @@
             <button type="submit" class="btn btn-rustico btn-lg">Entrar al Refugio</button>
         </div>
     </form>
-
+    <div class="text-center mt-3 mb-2">
+        <span class="text-light">¿No tienes cuenta?</span>
+        <a th:href="@{/registro}" class="text-decoration-none fw-bold" style="color: var(--naranja-fuego);">Regístrate aquí</a>
+    </div>
     <div class="text-center mt-4">
         <a th:href="@{/hoteles}" class="text-decoration-none" style="color: var(--madera-clara);">← Volver al listado público</a>
     </div>
