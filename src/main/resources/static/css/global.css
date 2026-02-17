@@ -54,3 +54,23 @@ body {
     background-color: var(--verde-pino);
     font-size: 1.1rem;
 }
+
+/* --- NUEVOS ESTILOS PARA LA VISTA DE DETALLE --- */
+
+/* Tarjeta estática sin animación hover */
+.card-detalle {
+    background-color: var(--tarjeta-oscura);
+    border: 1px solid var(--madera-clara);
+}
+
+/* Efecto hover para el enlace de "volver" */
+.link-volver {
+    color: var(--madera-clara);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.link-volver:hover {
+    color: var(--naranja-fuego);
+    text-decoration: underline;
+}

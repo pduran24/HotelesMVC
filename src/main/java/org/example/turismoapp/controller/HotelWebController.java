@@ -5,6 +5,7 @@ import org.example.turismoapp.service.HotelService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -19,5 +20,12 @@ public class HotelWebController {
         model.addAttribute("listaHoteles", hotelService.findAll());
 
         return "hoteles";
+    }
+
+    @GetMapping("/{id}")
+    public String verDetalleHotel(@PathVariable Long id, Model model) {
+        model.addAttribute("hotel", hotelService.findById(id));
+
+        return "hotel-detalle";
     }
 }
