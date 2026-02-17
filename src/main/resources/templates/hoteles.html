@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" data-bs-theme="dark">
+
+<head th:replace="~{fragments/layout :: head('Alojamientos - TurismoApp')}"></head>
+
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="container pb-5">
+    <h2 class="mb-4 fw-bold" style="color: var(--madera-clara);">🏨 Refugios y Alojamientos</h2>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+        <div class="col" th:each="hotel : ${listaHoteles}">
+
+            <div class="card h-100 card-hotel">
+                <img th:src="@{'https://picsum.photos/seed/' + ${hotel.id} + '/600/400'}"
+                     class="card-img-top" alt="Foto del refugio" style="height: 200px; object-fit: cover;">
+
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title fw-bold text-light" th:text="${hotel.nombre}">Nombre Hotel</h5>
+                        <span class="badge precio-badge" th:text="${hotel.precioNoche} + ' €'">100 €</span>
+                    </div>
+
+                    <p class="text-muted small mb-2">
+                        📍 <span th:text="${hotel.ubicacion}">Ubicación</span> |
+                        ⭐ <span th:text="${hotel.estrellas}">4</span> Estrellas
+                    </p>
+
+                    <p class="card-text text-light" th:text="${hotel.descripcion}"
+                       style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                        Descripción...
+                    </p>
+                </div>
+
+                <div class="card-footer bg-transparent border-top-0 pb-3 text-center">
+                    <a th:href="@{/hoteles/{id}(id=${hotel.id})}" class="btn btn-rustico w-100">Ver Refugio</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(listaHoteles)}" class="alert alert-warning text-center mt-4" style="background-color: var(--tarjeta-oscura); color: var(--madera-clara); border: 1px solid var(--madera-clara);">
+        No hay refugios disponibles en este momento.
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
