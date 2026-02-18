@@ -1,12 +1,12 @@
 package org.example.turismoapp.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Entidad que representa un cliente en el sistema.
@@ -35,11 +35,20 @@ public class Cliente {
      * Lista de reservas realizadas por este cliente.
      */
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Reserva> reservas;
+    private List<Reserva> reservas = new ArrayList<>();
 
     /**
      * Historial de reseñas escritas por este cliente.
      */
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Resena> misResenas;
+    private List<Resena> misResenas = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "cliente_favoritos",
+            joinColumns = @JoinColumn(name = "cliente_id"),
+            inverseJoinColumns = @JoinColumn(name = "hotel_id")
+    )
+    @ToString.Exclude
+    private Set<Hotel> favoritos = new HashSet<>();
 }
