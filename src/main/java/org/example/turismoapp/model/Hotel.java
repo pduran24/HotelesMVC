@@ -53,6 +53,16 @@ public class Hotel {
     private BigDecimal precioNoche;
 
     /**
+     * Latitud geográfica.
+     */
+    private Double latitud;
+
+    /**
+     * Longitud geográfica.
+     */
+    private Double longitud;
+
+    /**
      * Lista de reservas asociadas a este hotel.
      */
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
