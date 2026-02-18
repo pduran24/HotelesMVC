@@ -1,13 +1,12 @@
 package org.example.turismoapp.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.example.turismoapp.model.enums.EstadoReserva;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Entidad que representa una reserva en el sistema.
@@ -18,6 +17,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter @Setter
+@Builder
 public class Reserva {
 
     /**
@@ -38,14 +38,23 @@ public class Reserva {
     private LocalDate fechaSalida;
 
     /**
-     * Número total de días de la estancia.
-     */
-    private Integer numeroDias;
-
-    /**
      * Precio total calculado de la reserva.
      */
     private BigDecimal precioTotal;
+
+    /**
+     * Estado de la reserva.
+     * Por defecto se inicializa en CONFIRMADA.
+     */
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private EstadoReserva estado = EstadoReserva.CONFIRMADA;
+
+    /**
+     * Fecha de auditoría para saber cuándo se hizo la reserva.
+     */
+    @Builder.Default
+    private LocalDate fechaCreacion = LocalDate.now();
 
     /**
      * Hotel asociado a la reserva.
@@ -60,5 +69,13 @@ public class Reserva {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
+
+    /**
+     * Calcula el número de noches dinámicamente.
+     */
+    public long getNumeroNoches() {
+        if (fechaEntrada == null || fechaSalida == null) return 0;
+        return ChronoUnit.DAYS.between(fechaEntrada, fechaSalida);
+    }
 
 }

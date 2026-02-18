@@ -1,5 +1,7 @@
 package org.example.turismoapp.dto;
 
+import org.example.turismoapp.model.enums.EstadoReserva;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -20,7 +22,8 @@ public record ReservaResponse(
         String clienteNombre,
         LocalDate fechaEntrada,
         LocalDate fechaSalida,
-        Integer numeroDias,
-        BigDecimal precioTotal
+        Long numeroDias,
+        BigDecimal precioTotal,
+        EstadoReserva estado
 ) {
 }

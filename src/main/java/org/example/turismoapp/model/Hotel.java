@@ -1,13 +1,13 @@
 package org.example.turismoapp.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Entidad que representa un hotel en el sistema.
@@ -66,19 +66,32 @@ public class Hotel {
      * Lista de reservas asociadas a este hotel.
      */
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Reserva> reservas;
+    private List<Reserva> reservas = new ArrayList<>();
 
     /**
      * Lista de imágenes asociadas a este hotel.
      */
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<HotelImagen> imagenes;
+    private List<HotelImagen> imagenes = new ArrayList<>();
 
     /**
      * Lista de reseñas asociadas a este hotel.
      */
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Resena> resenas;
+    private List<Resena> resenas = new ArrayList<>();
+
+    /**
+     * Clientes que han guardado este hotel como favorito.
+     * mappedBy = "favoritos" indica que la configuración manda en la clase Cliente.
+     */
+    @ManyToMany(mappedBy = "favoritos", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Set<Cliente> clientesQueMeAman = new HashSet<>();
+
+
+    public int getNumeroFavoritos() {
+        return clientesQueMeAman.size();
+    }
 
     /**
      * Calcula la media de estrellas al vuelo.

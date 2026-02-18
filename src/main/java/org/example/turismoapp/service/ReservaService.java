@@ -9,6 +9,7 @@ import org.example.turismoapp.exception.ReservaNoEncontradaException;
 import org.example.turismoapp.model.Cliente;
 import org.example.turismoapp.model.Hotel;
 import org.example.turismoapp.model.Reserva;
+import org.example.turismoapp.model.enums.EstadoReserva;
 import org.example.turismoapp.repository.ClienteRepository;
 import org.example.turismoapp.repository.HotelRepository;
 import org.example.turismoapp.repository.ReservaRepository;
@@ -85,7 +86,7 @@ public class ReservaService {
         Reserva reserva = new Reserva();
         reserva.setFechaEntrada(request.fechaEntrada());
         reserva.setFechaSalida(request.fechaSalida());
-        reserva.setNumeroDias((int) dias);
+        reserva.setEstado(EstadoReserva.CONFIRMADA);
         reserva.setPrecioTotal(precioTotal);
         reserva.setHotel(hotel);
         reserva.setCliente(cliente);
@@ -102,11 +103,12 @@ public class ReservaService {
      * @throws ReservaNoEncontradaException si la reserva no existe.
      */
     @Transactional
-    public void delete(Long id) {
-        if (!reservaRepository.existsById(id)) {
-            throw new ReservaNoEncontradaException("Reserva no encontrada");
-        }
-        reservaRepository.deleteById(id);
+    public void cancelarReserva(Long id) {
+        Reserva reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+
+        reserva.setEstado(EstadoReserva.CANCELADA);
+        reservaRepository.save(reserva);
     }
 
     /**
@@ -122,8 +124,9 @@ public class ReservaService {
                 reserva.getCliente().getNombre(),
                 reserva.getFechaEntrada(),
                 reserva.getFechaSalida(),
-                reserva.getNumeroDias(),
-                reserva.getPrecioTotal()
+                reserva.getNumeroNoches(),
+                reserva.getPrecioTotal(),
+                reserva.getEstado()
         );
     }
 }
