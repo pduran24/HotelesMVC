@@ -120,6 +120,7 @@ public class DataSeeder implements CommandLineRunner {
         hotel.setLongitud(longitud);
 
         hotel.setImagenes(new java.util.ArrayList<>());
+        hotel.setResenas(new java.util.ArrayList<>());
         return hotel;
     }
 }
