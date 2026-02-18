@@ -57,4 +57,10 @@ public class Hotel {
      */
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reserva> reservas;
+
+    /**
+     * Lista de imágenes asociadas a este hotel.
+     */
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HotelImagen> imagenes;
 }
