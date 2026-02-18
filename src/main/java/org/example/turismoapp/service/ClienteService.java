@@ -53,10 +53,18 @@ public class ClienteService {
      */
     @Transactional
     public ClienteResponse create(ClienteRequest request) {
+        if (clienteRepository.findByEmail(request.email()).isPresent()) {
+            throw new RuntimeException("Ya existe un cliente con ese email");
+        }
+
         Cliente cliente = new Cliente();
         cliente.setNombre(request.nombre());
+        cliente.setEmail(request.email());
+
+        cliente.setFavoritos(new java.util.HashSet<>());
 
         Cliente saved = clienteRepository.save(cliente);
+
         return mapToResponse(saved);
     }
 

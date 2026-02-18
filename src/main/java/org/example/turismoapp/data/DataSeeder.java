@@ -50,6 +50,7 @@ public class DataSeeder implements CommandLineRunner {
         if (userRepository.count() == 0) {
             crearAdmin();
         }
+        crearUsuariosLogin();
     }
 
 
@@ -97,11 +98,20 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private void crearClientes() {
-        Cliente c1 = new Cliente(); c1.setNombre("Pablo");
-        Cliente c2 = new Cliente(); c2.setNombre("Ana");
+        // CLIENTE 1: Pablo
+        Cliente c1 = new Cliente();
+        c1.setNombre("Pablo Viajero");
+        c1.setEmail("pablo@example.com");
+        c1.setFavoritos(new java.util.HashSet<>());
+
+        // CLIENTE 2: Ana
+        Cliente c2 = new Cliente();
+        c2.setNombre("Ana Montañera");
+        c2.setEmail("ana@example.com");
+        c2.setFavoritos(new java.util.HashSet<>());
 
         clienteRepository.saveAll(List.of(c1, c2));
-        log.info("Clientes ficticios creados.");
+        log.info("Clientes ficticios creados con email.");
     }
 
     private void crearFavoritos() {
@@ -142,5 +152,26 @@ public class DataSeeder implements CommandLineRunner {
         hotel.setImagenes(new java.util.ArrayList<>());
         hotel.setResenas(new java.util.ArrayList<>());
         return hotel;
+    }
+
+    private void crearUsuariosLogin() {
+        // Usuario para Pablo
+        if (!userRepository.existsByUsername("pablo@example.com")) {
+            UserEntity userPablo = new UserEntity();
+            userPablo.setUsername("pablo@example.com");
+            userPablo.setPassword("1234"); // En un caso real, iría encriptada
+            userPablo.setRole("USER");
+            userRepository.save(userPablo);
+        }
+
+        // Usuario Admin
+        if (!userRepository.existsByUsername("admin")) {
+            UserEntity admin = new UserEntity();
+            admin.setUsername("admin");
+            admin.setPassword("admin123");
+            admin.setRole("ADMIN");
+            userRepository.save(admin);
+        }
+        log.info("Usuarios de seguridad (Login) creados.");
     }
 }

@@ -14,14 +14,25 @@
         <p style="color: var(--madera-clara);">Crea tu cuenta para reservar</p>
     </div>
     <form th:action="@{/registro}" method="post">
+
         <div class="mb-3">
-            <label for="username" class="form-label text-light">Nuevo Usuario</label>
-            <input type="text" class="form-control bg-dark text-light border-secondary" id="username" name="username" required autofocus>
+            <label for="nombre" class="form-label text-light">Nombre Completo</label>
+            <input type="text" class="form-control bg-dark text-light border-secondary"
+                   id="nombre" name="nombre" placeholder="Ej: Pablo Viajero" required autofocus>
         </div>
+
+        <div class="mb-3">
+            <label for="username" class="form-label text-light">Correo Electrónico</label>
+            <input type="email" class="form-control bg-dark text-light border-secondary"
+                   id="username" name="username" placeholder="nombre@ejemplo.com" required>
+        </div>
+
         <div class="mb-4">
             <label for="password" class="form-label text-light">Contraseña</label>
-            <input type="password" class="form-control bg-dark text-light border-secondary" id="password" name="password" required minlength="4">
+            <input type="password" class="form-control bg-dark text-light border-secondary"
+                   id="password" name="password" required minlength="4">
         </div>
+
         <div class="d-grid">
             <button type="submit" class="btn btn-rustico btn-lg">Registrarse</button>
         </div>

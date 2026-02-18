@@ -32,6 +32,12 @@ public class Cliente {
     private String nombre;
 
     /**
+     * Email del cliente, debe ser único y no nulo.
+     */
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    /**
      * Lista de reservas realizadas por este cliente.
      */
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)

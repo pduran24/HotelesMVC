@@ -22,24 +22,26 @@ public class AuthService {
      * Registra un nuevo usuario en el sistema, creando sus credenciales de acceso
      * y su perfil de cliente asociado.
      *
-     * @param username Nombre de usuario.
+     * @param nombre Nombre de usuario.
+     * @param email Email del usuario
      * @param password Contraseña plana.
      * @throws RuntimeException si el usuario ya existe en la base de datos.
      */
     @Transactional
-    public void registrarNuevoUsuario(String username, String password) {
-        if (userRepository.findByUsername(username).isPresent()) {
-            throw new UsuarioYaExistenteException("El nombre de usuario ya está en uso");
+    public void registrarNuevoUsuario(String nombre, String email, String password) { // <--- 3 Argumentos
+
+        if (userRepository.findByUsername(email).isPresent()) {
+            throw new RuntimeException("El correo electrónico ya está registrado");
         }
 
         UserEntity newUser = new UserEntity();
-        newUser.setUsername(username);
+        newUser.setUsername(email);
         newUser.setPassword(password);
         newUser.setRole("USER");
         userRepository.save(newUser);
 
 
-        ClienteRequest clienteRequest = new ClienteRequest(username);
+        ClienteRequest clienteRequest = new ClienteRequest(nombre, email);
         clienteService.create(clienteRequest);
     }
 }
