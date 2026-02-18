@@ -111,6 +111,21 @@ public class ReservaService {
         reservaRepository.save(reserva);
     }
 
+    @Transactional(readOnly = true)
+    public List<ReservaResponse> obtenerReservasPorEmail(String email) {
+        Cliente cliente = clienteRepository.findByEmail(email).orElse(null);
+
+        if (cliente == null) {
+            return List.of();
+        }
+
+        List<Reserva> reservas = reservaRepository.findByCliente(cliente);
+
+        return reservas.stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
     /**
      * Convierte una entidad Reserva a un DTO ReservaResponse.
      *
