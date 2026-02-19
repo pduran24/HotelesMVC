@@ -20,15 +20,12 @@ public class ReservaController {
 
     @GetMapping
     public String listarMisReservas(Model model, Principal principal) {
-        // 1. Obtenemos el email del usuario logueado
         String email = principal.getName();
 
-        // 2. Pedimos sus reservas al servicio
         List<ReservaResponse> misReservas = reservaService.obtenerReservasPorEmail(email);
 
-        // 3. Pasamos la lista a la vista HTML
         model.addAttribute("reservas", misReservas);
 
-        return "mis-reservas"; // Nombre del archivo HTML
+        return "mis-reservas";
     }
 }

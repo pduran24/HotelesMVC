@@ -92,7 +92,10 @@
                 <li class="nav-item">
                     <a th:href="@{/mis-reservas}" class="nav-link">
                         <i class="bi bi-calendar2-check fs-5"></i> Mis Reservas
-                        <span class="badge bg-warning text-dark ms-auto rounded-pill">0</span>
+                        <span class="badge bg-warning text-dark ms-auto rounded-pill"
+                              th:if="${numReservas > 0}"
+                              th:text="${numReservas}">
+                        </span>
                     </a>
                 </li>
                 <li class="nav-item">
