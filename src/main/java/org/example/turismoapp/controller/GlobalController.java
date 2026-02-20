@@ -1,6 +1,7 @@
 package org.example.turismoapp.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.turismoapp.repository.ReservaRepository;
 import org.example.turismoapp.service.ReservaService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -8,20 +9,21 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
+
 @ControllerAdvice
 @RequiredArgsConstructor
 class GlobalController {
-    private final ReservaService reservaService;
+    private final ReservaRepository reservaRepository;
 
     @ModelAttribute("numReservas")
-    public int cargarNumeroReservas(Authentication authentication) {
+    public Long cargarNumeroReservas(Principal principal) {
 
-        if (authentication == null) {
-            return 0;
+        if (principal == null) {
+            return 0L;
         }
 
-        String email = authentication.getName();
 
-        return reservaService.obtenerReservasPorEmail(email).size();
+        return reservaRepository.countByCliente_Email(principal.getName());
     }
 }

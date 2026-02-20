@@ -11,4 +11,5 @@ import java.util.List;
  */
 public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     List<Reserva> findByCliente(Cliente cliente);
+    long countByCliente_Email(String email);
 }
