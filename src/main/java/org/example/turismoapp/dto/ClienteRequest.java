@@ -1,5 +1,6 @@
 package org.example.turismoapp.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 /**
@@ -10,6 +11,10 @@ import jakarta.validation.constraints.NotBlank;
 public record ClienteRequest(
 
         @NotBlank(message = "El nombre del cliente es obligatorio")
-        String nombre
+        String nombre,
+
+        @NotBlank(message = "El email es obligatorio")
+        @Email(message = "Debe ser un email válido")
+        String email
 ) {
 }

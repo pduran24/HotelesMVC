@@ -3,9 +3,11 @@ package org.example.turismoapp.data;
 import lombok.extern.slf4j.Slf4j;
 import org.example.turismoapp.model.Cliente;
 import org.example.turismoapp.model.Hotel;
+import org.example.turismoapp.model.Reserva;
 import org.example.turismoapp.model.UserEntity;
 import org.example.turismoapp.repository.ClienteRepository;
 import org.example.turismoapp.repository.HotelRepository;
+import org.example.turismoapp.repository.ReservaRepository;
 import org.example.turismoapp.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -25,11 +27,13 @@ public class DataSeeder implements CommandLineRunner {
     private final HotelRepository hotelRepository;
     private final UserRepository userRepository;
     private final ClienteRepository clienteRepository;
+    private final ReservaRepository reservaRepository;
 
-    public DataSeeder(HotelRepository hotelRepository, UserRepository userRepository, ClienteRepository clienteRepository) {
+    public DataSeeder(HotelRepository hotelRepository, UserRepository userRepository, ClienteRepository clienteRepository, ReservaRepository reservaRepository) {
         this.hotelRepository = hotelRepository;
         this.userRepository = userRepository;
         this.clienteRepository = clienteRepository;
+        this.reservaRepository = reservaRepository;
     }
 
     @Override
@@ -50,6 +54,8 @@ public class DataSeeder implements CommandLineRunner {
         if (userRepository.count() == 0) {
             crearAdmin();
         }
+        crearUsuariosLogin();
+        crearReservaPrueba();
     }
 
 
@@ -97,11 +103,20 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private void crearClientes() {
-        Cliente c1 = new Cliente(); c1.setNombre("Pablo");
-        Cliente c2 = new Cliente(); c2.setNombre("Ana");
+        // CLIENTE 1: Pablo
+        Cliente c1 = new Cliente();
+        c1.setNombre("Pablo Viajero");
+        c1.setEmail("pablo@test.com");
+        c1.setFavoritos(new java.util.HashSet<>());
+
+        // CLIENTE 2: Ana
+        Cliente c2 = new Cliente();
+        c2.setNombre("Ana Montañera");
+        c2.setEmail("ana@test.com");
+        c2.setFavoritos(new java.util.HashSet<>());
 
         clienteRepository.saveAll(List.of(c1, c2));
-        log.info("Clientes ficticios creados.");
+        log.info("Clientes ficticios creados con email.");
     }
 
     private void crearFavoritos() {
@@ -118,6 +133,28 @@ public class DataSeeder implements CommandLineRunner {
 
             clienteRepository.save(pablo);
             log.info("✅ Favoritos inicializados: A Pablo le gustan 2 hoteles.");
+        }
+    }
+
+    // Inyecta ReservaRepository arriba en el constructor del DataSeeder
+
+    private void crearReservaPrueba() {
+        if (reservaRepository.count() == 0) {
+            Cliente laura = clienteRepository.findByEmail("pablo@test.com").orElse(null); // Asegúrate de que existe
+            Hotel hotel = hotelRepository.findByNombre("Gran Hotel La Florida").orElse(null);
+
+            if (laura != null && hotel != null) {
+                Reserva r = new Reserva();
+                r.setCliente(laura);
+                r.setHotel(hotel);
+                r.setFechaEntrada(java.time.LocalDate.now().plusDays(10));
+                r.setFechaSalida(java.time.LocalDate.now().plusDays(15));
+                r.setPrecioTotal(new java.math.BigDecimal("1500.00"));
+                r.setEstado(org.example.turismoapp.model.enums.EstadoReserva.CONFIRMADA);
+
+                reservaRepository.save(r);
+                log.info("🎁 ¡Reserva de regalo creada para Pablo!");
+            }
         }
     }
 
@@ -142,5 +179,26 @@ public class DataSeeder implements CommandLineRunner {
         hotel.setImagenes(new java.util.ArrayList<>());
         hotel.setResenas(new java.util.ArrayList<>());
         return hotel;
+    }
+
+    private void crearUsuariosLogin() {
+        // Usuario para Pablo
+        if (!userRepository.existsByUsername("pablo@test.com")) {
+            UserEntity userPablo = new UserEntity();
+            userPablo.setUsername("pablo@test.com");
+            userPablo.setPassword("1234"); // En un caso real, iría encriptada
+            userPablo.setRole("USER");
+            userRepository.save(userPablo);
+        }
+
+        // Usuario Admin
+        if (!userRepository.existsByUsername("admin")) {
+            UserEntity admin = new UserEntity();
+            admin.setUsername("admin");
+            admin.setPassword("admin123");
+            admin.setRole("ADMIN");
+            userRepository.save(admin);
+        }
+        log.info("Usuarios de seguridad (Login) creados.");
     }
 }

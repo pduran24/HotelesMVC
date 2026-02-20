@@ -3,6 +3,7 @@ package org.example.turismoapp.controller;
 import org.example.turismoapp.exception.UsuarioYaExistenteException;
 import org.example.turismoapp.service.AuthService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,18 +31,19 @@ class LoginController {
     }
 
     @PostMapping("/registro")
-    public String registrarUsuario(
-            @RequestParam String username,
-            @RequestParam String password,
-            RedirectAttributes redirectAttributes) { // <-- Inyectamos RedirectAttributes
-
+    public String registrarUsuario(@RequestParam String nombre,
+                                   @RequestParam String username,
+                                   @RequestParam String password,
+                                   Model model,
+                                   RedirectAttributes redirectAttributes) {
         try {
-            authService.registrarNuevoUsuario(username, password);
-            return "redirect:/login?registrado";
+            authService.registrarNuevoUsuario(nombre, username, password);
 
-        } catch (UsuarioYaExistenteException e) {
-            redirectAttributes.addFlashAttribute("errorRegistro", e.getMessage());
-            return "redirect:/registro";
+            redirectAttributes.addAttribute("registrado", true);
+            return "redirect:/login";
+        } catch (RuntimeException e) {
+            model.addAttribute("errorRegistro", e.getMessage());
+            return "registro";
         }
     }
 
