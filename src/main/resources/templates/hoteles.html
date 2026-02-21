@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org" data-bs-theme="dark">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" data-bs-theme="dark" xmlns:sec="http://www.w3.org/1999/xhtml">
 
 <head th:replace="~{fragments/layout :: head('Alojamientos - TurismoApp')}"></head>
 
@@ -14,8 +14,19 @@
         <div class="col" th:each="hotel : ${listaHoteles}">
 
             <div class="card h-100 card-hotel">
-                <img th:src="@{'https://picsum.photos/seed/' + ${hotel.id} + '/600/400'}"
-                     class="card-img-top" alt="Foto del refugio" style="height: 200px; object-fit: cover;">
+                <div class="position-relative">
+                    <img th:src="@{'https://picsum.photos/seed/' + ${hotel.id} + '/600/400'}"
+                         class="card-img-top" alt="Foto del refugio" style="height: 200px; object-fit: cover;">
+
+                    <div sec:authorize="isAuthenticated()" class="position-absolute top-0 end-0 m-2">
+                        <form th:action="@{/favoritos/toggle}" method="post">
+                            <input type="hidden" name="hotelId" th:value="${hotel.id}">
+                            <input type="hidden" name="redirectUrl" value="/hoteles"> <button type="submit" class="btn btn-light rounded-circle text-danger shadow p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <i class="bi" th:classappend="${favoritosIds != null && favoritosIds.contains(hotel.id)} ? 'bi-heart-fill' : 'bi-heart'"></i>
+                        </button>
+                        </form>
+                    </div>
+                </div>
 
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-2">

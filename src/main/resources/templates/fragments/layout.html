@@ -102,6 +102,12 @@
                 <li class="nav-item">
                     <a th:href="@{/favoritos}" class="nav-link">
                         <i class="bi bi-heart-fill text-danger fs-5"></i> Favoritos
+
+                        <span class="badge bg-danger text-white ms-auto rounded-pill"
+                              th:text="${numFavoritos}"
+                              th:if="${numFavoritos > 0}">
+                            0
+                        </span>
                     </a>
                 </li>
             </ul>
