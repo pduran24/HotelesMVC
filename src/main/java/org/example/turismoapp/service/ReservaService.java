@@ -1,6 +1,7 @@
 package org.example.turismoapp.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.turismoapp.dto.FechasOcupadasDTO;
 import org.example.turismoapp.dto.ReservaRequest;
 import org.example.turismoapp.dto.ReservaResponse;
 import org.example.turismoapp.exception.ClienteNotFoundException;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -123,6 +125,19 @@ public class ReservaService {
 
         return reservas.stream()
                 .map(this::mapToResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<FechasOcupadasDTO> obtenerFechasOcupadasPorHotel(Long hotelId) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        return reservaRepository.findByHotel_Id(hotelId).stream()
+                .filter(reserva -> reserva.getEstado().name().equals("CONFIRMADA"))
+                .map(reserva -> new FechasOcupadasDTO(
+                        reserva.getFechaEntrada().format(formatter),
+                        reserva.getFechaSalida().format(formatter)
+                ))
                 .toList();
     }
 
