@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org" data-bs-theme="dark">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" data-bs-theme="dark" xmlns:sec="http://www.w3.org/1999/xhtml">
 
 <head th:replace="~{fragments/layout :: head(${hotel.nombre} + ' - TurismoApp')}"></head>
 
@@ -20,9 +20,20 @@
     <div class="card card-detalle" style="border-radius: 12px; overflow: hidden;">
         <div class="row g-0">
 
-            <div class="col-md-6">
+            <div class="col-md-6 position-relative">
                 <img th:src="@{'https://picsum.photos/seed/' + ${hotel.id} + '/800/600'}"
                      class="img-fluid w-100 h-100" alt="Foto del refugio" style="object-fit: cover; min-height: 400px;">
+
+                <div sec:authorize="isAuthenticated()" class="position-absolute top-0 end-0 m-3">
+                    <form th:action="@{/favoritos/toggle}" method="post">
+                        <input type="hidden" name="hotelId" th:value="${hotel.id}">
+                        <input type="hidden" name="redirectUrl" th:value="'/hoteles/' + ${hotel.id}">
+
+                        <button type="submit" class="btn btn-light rounded-circle text-danger shadow p-2 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                            <i class="bi fs-4" th:classappend="${favoritosIds != null && favoritosIds.contains(hotel.id)} ? 'bi-heart-fill' : 'bi-heart'"></i>
+                        </button>
+                    </form>
+                </div>
             </div>
 
             <div class="col-md-6 d-flex flex-column">

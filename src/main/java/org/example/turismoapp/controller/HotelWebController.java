@@ -1,7 +1,7 @@
 package org.example.turismoapp.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.turismoapp.dto.FechasOcupadasDTO;
+import org.example.turismoapp.service.FavoritoService;
 import org.example.turismoapp.service.HotelService;
 import org.example.turismoapp.service.ReservaService;
 import org.springframework.stereotype.Controller;
@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
-
+import java.security.Principal;
 @Controller
 @RequestMapping("/hoteles")
 @RequiredArgsConstructor
@@ -19,22 +18,26 @@ public class HotelWebController {
 
     private final HotelService hotelService;
     private final ReservaService reservaService;
+    private final FavoritoService favoritoService;
 
     @GetMapping
-    public String listarHoteles(Model model) {
+    public String listarHoteles(Model model, Principal principal) {
         model.addAttribute("listaHoteles", hotelService.findAll());
 
+        if (principal != null) {
+            model.addAttribute("favoritosIds", favoritoService.obtenerIdsFavoritos(principal.getName()));
+        }
         return "hoteles";
     }
 
     @GetMapping("/{id}")
-    public String verDetalleHotel(@PathVariable Long id, Model model) {
+    public String verDetalleHotel(@PathVariable Long id, Model model, Principal principal) {
         model.addAttribute("hotel", hotelService.findById(id));
+        model.addAttribute("fechasOcupadas", reservaService.obtenerFechasOcupadasPorHotel(id));
 
-        List<FechasOcupadasDTO> fechasOcupadas = reservaService.obtenerFechasOcupadasPorHotel(id);
-
-        model.addAttribute("fechasOcupadas", fechasOcupadas);
-
+        if (principal != null) {
+            model.addAttribute("favoritosIds", favoritoService.obtenerIdsFavoritos(principal.getName()));
+        }
         return "hotel-detalle";
     }
 
