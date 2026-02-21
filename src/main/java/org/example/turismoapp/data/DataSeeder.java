@@ -55,7 +55,6 @@ public class DataSeeder implements CommandLineRunner {
             crearAdmin();
         }
         crearUsuariosLogin();
-        crearReservaPrueba();
     }
 
 
@@ -138,25 +137,6 @@ public class DataSeeder implements CommandLineRunner {
 
     // Inyecta ReservaRepository arriba en el constructor del DataSeeder
 
-    private void crearReservaPrueba() {
-        if (reservaRepository.count() == 0) {
-            Cliente laura = clienteRepository.findByEmail("pablo@test.com").orElse(null); // Asegúrate de que existe
-            Hotel hotel = hotelRepository.findByNombre("Gran Hotel La Florida").orElse(null);
-
-            if (laura != null && hotel != null) {
-                Reserva r = new Reserva();
-                r.setCliente(laura);
-                r.setHotel(hotel);
-                r.setFechaEntrada(java.time.LocalDate.now().plusDays(10));
-                r.setFechaSalida(java.time.LocalDate.now().plusDays(15));
-                r.setPrecioTotal(new java.math.BigDecimal("1500.00"));
-                r.setEstado(org.example.turismoapp.model.enums.EstadoReserva.CONFIRMADA);
-
-                reservaRepository.save(r);
-                log.info("🎁 ¡Reserva de regalo creada para Pablo!");
-            }
-        }
-    }
 
     private void crearAdmin() {
         UserEntity admin = new UserEntity();
