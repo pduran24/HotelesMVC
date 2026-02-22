@@ -41,7 +41,7 @@ public class AuthService {
         userRepository.save(newUser);
 
 
-        ClienteRequest clienteRequest = new ClienteRequest(nombre, email);
+        ClienteRequest clienteRequest = new ClienteRequest(nombre, email, null, null);
         clienteService.create(clienteRequest);
     }
 }

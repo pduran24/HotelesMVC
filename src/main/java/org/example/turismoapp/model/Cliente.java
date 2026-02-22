@@ -36,6 +36,12 @@ public class Cliente {
      */
     @Column(unique = true, nullable = false)
     private String email;
+    private String avatarUrl;
+
+    @Column(length = 500)
+    private String biografia;
+
+    private String telefono;
 
     /**
      * Lista de reservas realizadas por este cliente.

@@ -10,20 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/**
- * Servicio para gestionar la lógica de negocio relacionada con los clientes.
- */
 @Service
 @RequiredArgsConstructor
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
 
-    /**
-     * Recupera todos los clientes registrados.
-     *
-     * @return Lista de objetos ClienteResponse que representan todos los clientes.
-     */
     @Transactional(readOnly = true)
     public List<ClienteResponse> findAll() {
         return clienteRepository.findAll().stream()
@@ -31,13 +23,6 @@ public class ClienteService {
                 .toList();
     }
 
-    /**
-     * Busca un cliente por su ID.
-     *
-     * @param id El ID del cliente a buscar.
-     * @return Objeto ClienteResponse con los detalles del cliente.
-     * @throws RuntimeException si no se encuentra un cliente con el ID proporcionado.
-     */
     @Transactional(readOnly = true)
     public ClienteResponse findById(Long id) {
         return clienteRepository.findById(id)
@@ -45,12 +30,6 @@ public class ClienteService {
                 .orElseThrow(() -> new RuntimeException("Cliente con id " + id + " no encontrado"));
     }
 
-    /**
-     * Crea un nuevo cliente en el sistema.
-     *
-     * @param request Objeto ClienteRequest con la información del nuevo cliente.
-     * @return Objeto ClienteResponse con los detalles del cliente creado.
-     */
     @Transactional
     public ClienteResponse create(ClienteRequest request) {
         if (clienteRepository.findByEmail(request.email()).isPresent()) {
@@ -60,38 +39,31 @@ public class ClienteService {
         Cliente cliente = new Cliente();
         cliente.setNombre(request.nombre());
         cliente.setEmail(request.email());
-
         cliente.setFavoritos(new java.util.HashSet<>());
 
-        Cliente saved = clienteRepository.save(cliente);
-
-        return mapToResponse(saved);
+        return mapToResponse(clienteRepository.save(cliente));
     }
 
-    /**
-     * Actualiza la información de un cliente existente.
-     *
-     * @param id      El ID del cliente a actualizar.
-     * @param request Objeto ClienteRequest con la nueva información del cliente.
-     * @return Objeto ClienteResponse con los detalles del cliente actualizado.
-     * @throws RuntimeException si no se encuentra el cliente a actualizar.
-     */
     @Transactional
     public ClienteResponse update(Long id, ClienteRequest request) {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
 
         cliente.setNombre(request.nombre());
+        cliente.setBiografia(request.biografia());
+        cliente.setTelefono(request.telefono());
 
         return mapToResponse(clienteRepository.save(cliente));
     }
 
-    /**
-     * Elimina un cliente del sistema.
-     *
-     * @param id El ID del cliente a eliminar.
-     * @throws RuntimeException si el cliente no existe.
-     */
+    @Transactional
+    public void updateAvatar(Long id, String avatarUrl) {
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+        cliente.setAvatarUrl(avatarUrl);
+        clienteRepository.save(cliente);
+    }
+
     @Transactional
     public void delete(Long id) {
         if (!clienteRepository.existsById(id)) {
@@ -100,13 +72,14 @@ public class ClienteService {
         clienteRepository.deleteById(id);
     }
 
-    /**
-     * Convierte una entidad Cliente a un DTO ClienteResponse.
-     *
-     * @param cliente La entidad Cliente a convertir.
-     * @return El objeto ClienteResponse resultante.
-     */
     private ClienteResponse mapToResponse(Cliente cliente) {
-        return new ClienteResponse(cliente.getId(), cliente.getNombre());
+        return new ClienteResponse(
+                cliente.getId(),
+                cliente.getNombre(),
+                cliente.getEmail(),
+                cliente.getAvatarUrl(),
+                cliente.getBiografia(),
+                cliente.getTelefono()
+        );
     }
 }

@@ -181,37 +181,71 @@
             <div class="carousel-inner py-2">
                 <div th:each="resena, iterStat : ${hotel.resenas}" th:if="${iterStat.index % 2 == 0}" class="carousel-item" th:classappend="${iterStat.first} ? 'active' : ''">
                     <div class="row row-cols-1 row-cols-md-2 g-4">
+
                         <div class="col">
                             <div class="card bg-dark border-secondary h-100 shadow-sm">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
+
                                         <div class="d-flex align-items-center">
-                                            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-3" style="width: 45px; height: 45px;" th:text="${#strings.substring(resena.nombreAutor, 0, 1).toUpperCase()}">A</div>
-                                            <div><h6 class="mb-0 text-light fw-bold" th:text="${resena.nombreAutor}">Nombre</h6><small class="text-muted" th:text="${resena.fecha}">Fecha</small></div>
+                                            <img th:if="${resena.avatarAutor != null}"
+                                                 th:src="${resena.avatarAutor}"
+                                                 alt="Avatar"
+                                                 class="rounded-circle object-fit-cover shadow-sm me-3"
+                                                 style="width: 45px; height: 45px; border: 2px solid var(--madera-clara);">
+
+                                            <div th:unless="${resena.avatarAutor != null}"
+                                                 class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm me-3"
+                                                 style="width: 45px; height: 45px; border: 2px solid var(--madera-clara);"
+                                                 th:text="${#strings.substring(resena.nombreAutor, 0, 1).toUpperCase()}">A</div>
+
+                                            <div>
+                                                <h6 class="mb-0 text-light fw-bold" th:text="${resena.nombreAutor}">Nombre</h6>
+                                                <small class="text-muted" th:text="${resena.fecha}">Fecha</small>
+                                            </div>
                                         </div>
+
                                         <div><i th:each="i : ${#numbers.sequence(1, 5)}" class="bi text-warning" th:classappend="${i <= resena.puntuacion} ? 'bi-star-fill' : 'bi-star'"></i></div>
                                     </div>
                                     <p class="card-text text-light" style="font-style: italic;">"<span th:text="${resena.comentario}">Comentario</span>"</p>
                                 </div>
                             </div>
                         </div>
+
                         <div class="col" th:if="${iterStat.index + 1 < #lists.size(hotel.resenas)}">
                             <div class="card bg-dark border-secondary h-100 shadow-sm" th:with="resena2=${hotel.resenas[iterStat.index + 1]}">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
+
                                         <div class="d-flex align-items-center">
-                                            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-3" style="width: 45px; height: 45px;" th:text="${#strings.substring(resena2.nombreAutor, 0, 1).toUpperCase()}">A</div>
-                                            <div><h6 class="mb-0 text-light fw-bold" th:text="${resena2.nombreAutor}">Nombre</h6><small class="text-muted" th:text="${resena2.fecha}">Fecha</small></div>
+                                            <img th:if="${resena2.avatarAutor != null}"
+                                                 th:src="${resena2.avatarAutor}"
+                                                 alt="Avatar"
+                                                 class="rounded-circle object-fit-cover shadow-sm me-3"
+                                                 style="width: 45px; height: 45px; border: 2px solid var(--madera-clara);">
+
+                                            <div th:unless="${resena2.avatarAutor != null}"
+                                                 class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm me-3"
+                                                 style="width: 45px; height: 45px; border: 2px solid var(--madera-clara);"
+                                                 th:text="${#strings.substring(resena2.nombreAutor, 0, 1).toUpperCase()}">A</div>
+
+                                            <div>
+                                                <h6 class="mb-0 text-light fw-bold" th:text="${resena2.nombreAutor}">Nombre</h6>
+                                                <small class="text-muted" th:text="${resena2.fecha}">Fecha</small>
+                                            </div>
                                         </div>
+
                                         <div><i th:each="i : ${#numbers.sequence(1, 5)}" class="bi text-warning" th:classappend="${i <= resena2.puntuacion} ? 'bi-star-fill' : 'bi-star'"></i></div>
                                     </div>
                                     <p class="card-text text-light" style="font-style: italic;">"<span th:text="${resena2.comentario}">Comentario</span>"</p>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
+
             <th:block th:if="${#lists.size(hotel.resenas) > 2}">
                 <button class="carousel-control-prev" type="button" data-bs-target="#carruselResenas" data-bs-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span></button>
                 <button class="carousel-control-next" type="button" data-bs-target="#carruselResenas" data-bs-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span></button>

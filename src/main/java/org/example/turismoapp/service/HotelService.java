@@ -21,6 +21,7 @@ import java.util.List;
 public class HotelService {
 
     private final HotelRepository hotelRepository;
+    private final ResenaService resenaService;
 
     /**
      * Recupera todos los hoteles disponibles.
@@ -120,6 +121,7 @@ public class HotelService {
         List<ResenaDTO> listaResenas = hotel.getResenas().stream()
                 .map(r -> new ResenaDTO(
                         r.getCliente().getNombre(),
+                        r.getCliente().getAvatarUrl(),
                         r.getPuntuacion(),
                         r.getComentario(),
                         r.getFecha().toString()
