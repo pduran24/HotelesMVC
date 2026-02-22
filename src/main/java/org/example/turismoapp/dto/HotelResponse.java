@@ -20,6 +20,8 @@ public record HotelResponse(
         String descripcion,
         Integer estrellas,
         BigDecimal precioNoche,
-        List<String> imagenes
+        List<String> imagenes,
+        Double notaMedia,
+        List<ResenaDTO> resenas
 ) {
 }

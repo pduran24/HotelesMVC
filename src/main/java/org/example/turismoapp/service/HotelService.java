@@ -3,6 +3,7 @@ package org.example.turismoapp.service;
 import lombok.RequiredArgsConstructor;
 import org.example.turismoapp.dto.HotelRequest;
 import org.example.turismoapp.dto.HotelResponse;
+import org.example.turismoapp.dto.ResenaDTO;
 import org.example.turismoapp.exception.HotelNotFoundException;
 import org.example.turismoapp.model.Hotel;
 import org.example.turismoapp.model.HotelImagen;
@@ -115,6 +116,21 @@ public class HotelService {
         List<String> urlsImagenes = hotel.getImagenes().stream()
                 .map(HotelImagen::getUrl)
                 .toList();
+
+        List<ResenaDTO> listaResenas = hotel.getResenas().stream()
+                .map(r -> new ResenaDTO(
+                        r.getCliente().getNombre(),
+                        r.getPuntuacion(),
+                        r.getComentario(),
+                        r.getFecha().toString()
+                ))
+                .toList();
+
+        Double media = listaResenas.stream()
+                .mapToInt(ResenaDTO::puntuacion)
+                .average()
+                .orElse(0.0);
+
         return new HotelResponse(
                 hotel.getId(),
                 hotel.getNombre(),
@@ -122,7 +138,9 @@ public class HotelService {
                 hotel.getDescripcion(),
                 hotel.getEstrellas(),
                 hotel.getPrecioNoche(),
-                urlsImagenes
+                urlsImagenes,
+                Math.round(media * 10.0) / 10.0,
+                listaResenas
         );
     }
 }
