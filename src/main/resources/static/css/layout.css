@@ -1,0 +1,60 @@
+
+.flatpickr-calendar.inline {
+    width: 100%;
+    box-shadow: none;
+    border: 1px solid var(--madera-clara) !important;
+    background: transparent !important; /* Hereda el color del sidebar */
+    padding-bottom: 10px;
+    border-radius: 8px;
+}
+
+/* 2. Cabecera (Mes, Año y Flechas) */
+.flatpickr-months .flatpickr-month {
+    background: transparent !important;
+    color: white !important;
+    fill: var(--madera-clara) !important; /* Flechitas en color madera clara */
+}
+
+/* Dropdown de meses y año */
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+    background: var(--madera-oscura) !important;
+    color: white !important;
+}
+.flatpickr-current-month input.cur-year {
+    color: white !important;
+}
+
+/* 3. Días de la semana (L, M, X, J, V, S, D) */
+span.flatpickr-weekday {
+    color: var(--madera-clara) !important;
+    font-weight: bold;
+}
+
+/* 4. Días del mes (Números normales) */
+.flatpickr-day {
+    color: #e0e0e0 !important; /* Blanco roto para que se lea bien */
+    border-radius: 8px !important; /* Cuadraditos más redondeados */
+}
+
+/* Efecto al pasar el ratón (Hover) */
+.flatpickr-day:hover {
+    background: rgba(216, 67, 21, 0.2) !important; /* Naranja fuego transparente */
+    border-color: transparent !important;
+}
+
+/* 5. El día de "Hoy" */
+.flatpickr-day.today {
+    border-color: var(--madera-clara) !important;
+}
+
+/* 6. TUS DÍAS RESERVADOS (Poderoso Naranja Fuego) */
+.dia-reservado,
+.flatpickr-day.dia-reservado:hover {
+    background-color: var(--naranja-fuego) !important;
+    border-color: var(--naranja-fuego) !important;
+    color: white !important;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(216, 67, 21, 0.6);
+    transform: scale(1.05); /* Efecto pop out */
+    transition: all 0.2s;
+}

@@ -8,7 +8,31 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" data-bs-theme="dark">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+
     <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+
+
+    <style>
+        .dia-reservado {
+            background-color: var(--madera-clara) !important;
+            border-color: var(--madera-clara) !important;
+            color: white !important;
+            font-weight: bold;
+            box-shadow: 0 0 8px rgba(210, 105, 30, 0.5);
+        }
+
+        /* Ajustar el tamaño del calendario inline al sidebar */
+        .flatpickr-calendar.inline {
+            width: 100%;
+            box-shadow: none;
+            border: 1px solid var(--tarjeta-oscura);
+            background: var(--fondo-oscuro);
+        }
+    </style>
 </head>
 
 <body>
@@ -83,7 +107,7 @@
 
             <hr class="border-secondary opacity-50">
 
-            <ul class="nav flex-column mb-auto gap-2">
+            <ul class="nav flex-column gap-2 mb-4">
                 <li class="nav-item">
                     <a th:href="@{/perfil}" class="nav-link">
                         <i class="bi bi-person-vcard fs-5"></i> Mi Perfil Completo
@@ -112,7 +136,12 @@
                 </li>
             </ul>
 
-            <hr class="border-secondary opacity-50">
+            <div class="px-3 mb-auto">
+                <h6 class="text-light fw-bold mb-3"><i class="bi bi-calendar-range text-warning me-2"></i>Mis próximas fechas</h6>
+                <input type="text" id="miniCalendarioSidebar" class="d-none">
+            </div>
+
+            <hr class="border-secondary opacity-50 mt-4">
 
             <div class="mt-3">
                 <form th:action="@{/logout}" method="post">
@@ -127,6 +156,47 @@
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+            const miniCalInput = document.getElementById('miniCalendarioSidebar');
+
+            // Solo lo inicializamos si el usuario está logueado y el input existe
+            if (miniCalInput) {
+                // Recuperamos las fechas desde Thymeleaf
+                const misReservas = /*[[${misFechasReservadas}]]*/ [];
+
+                flatpickr(miniCalInput, {
+                    inline: true, // Se muestra siempre abierto
+                    locale: "es",
+                    showMonths: 1,
+                    clickOpens: false, // Desactiva que intente abrir un pop-up
+
+                    // Magia de Flatpickr: Esto se ejecuta al dibujar CADA día del calendario
+                    onDayCreate: function(dObj, dStr, fp, dayElem) {
+
+                        // Recorremos los rangos de reserva que vienen del servidor
+                        const estaReservado = misReservas.some(rango => {
+                            // Convertimos los textos "dd/mm/yyyy" a fechas comparables
+                            const fromDate = fp.parseDate(rango.from, "d/m/Y");
+                            const toDate = fp.parseDate(rango.to, "d/m/Y");
+
+                            // Si el día actual que está dibujando está dentro del rango...
+                            return dayElem.dateObj >= fromDate && dayElem.dateObj <= toDate;
+                        });
+
+                        // Si está reservado, le inyectamos nuestra clase CSS personalizada
+                        if (estaReservado) {
+                            dayElem.classList.add('dia-reservado');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 
 </th:block>
 

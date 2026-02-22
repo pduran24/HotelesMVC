@@ -141,6 +141,25 @@ public class ReservaService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public Long countByCliente_Email(String email) {
+        return reservaRepository.countByCliente_Email(email);
+    }
+
+    @Transactional(readOnly = true)
+    public List<FechasOcupadasDTO> obtenerFechasReservadasPorCliente(String email) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        return reservaRepository.findByCliente_Email(email).stream()
+                // Usamos directamente tu Enum EstadoReserva
+                .filter(reserva -> reserva.getEstado() == EstadoReserva.CONFIRMADA)
+                .map(reserva -> new FechasOcupadasDTO(
+                        reserva.getFechaEntrada().format(formatter),
+                        reserva.getFechaSalida().format(formatter)
+                ))
+                .toList();
+    }
+
     /**
      * Convierte una entidad Reserva a un DTO ReservaResponse.
      *
