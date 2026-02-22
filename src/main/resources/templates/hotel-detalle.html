@@ -102,10 +102,41 @@
                         <h2 class="card-title fw-bold text-light mb-0" th:text="${hotel.nombre}">Nombre Hotel</h2>
                         <span class="badge precio-badge px-3 py-2 fs-5" th:text="${hotel.precioNoche} + ' €/noche'">100 €</span>
                     </div>
-                    <p class="text-muted mb-4 fs-5">
-                        📍 <span th:text="${hotel.ubicacion}">Ubicación</span> <br>
-                        ⭐ <span th:text="${hotel.estrellas}">4</span> Estrellas
-                    </p>
+                    <div class="d-flex align-items-center flex-wrap gap-3 mb-4">
+
+                        <p class="text-muted fs-5 mb-0">
+                            📍 <span th:text="${hotel.ubicacion}">Ubicación</span> <br>
+                            ⭐ <span th:text="${hotel.estrellas}">4</span> Estrellas
+                        </p>
+
+                        <a th:if="${clima != null}"
+                           th:href="@{/hoteles/{id}/clima(id=${hotel.id})}"
+                           class="ms-md-auto d-flex align-items-center bg-dark border border-secondary rounded-pill px-3 py-2 shadow-sm text-decoration-none widget-clima"
+                           style="transition: all 0.2s ease;">
+
+                            <i class="bi fs-4 me-2" th:classappend="${clima.iconoCss}"></i>
+
+                            <div class="d-flex flex-column lh-1 border-end border-secondary pe-3 me-3">
+                                <span class="text-muted" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">Ahora mismo</span>
+                                <span class="fw-bold text-white fs-5">
+                    <span th:text="${clima.temperatura}">5.0</span>°C
+                </span>
+                            </div>
+
+                            <span class="text-light fw-medium" th:text="${clima.descripcion}">Despejado</span>
+
+                            <i class="bi bi-chevron-right text-muted ms-3"></i>
+                        </a>
+                    </div>
+
+                    <style th:if="${clima != null}">
+                        .widget-clima:hover {
+                            transform: translateY(-2px);
+                            border-color: var(--naranja-fuego) !important;
+                            box-shadow: 0 4px 12px rgba(216, 67, 21, 0.2) !important;
+                            cursor: pointer;
+                        }
+                    </style>
                     <h5 class="fw-bold" style="color: var(--madera-clara);">Sobre este refugio</h5>
                     <p class="card-text text-light mb-4" th:text="${hotel.descripcion}" style="line-height: 1.8;">Descripción...</p>
                     <div class="mt-auto pt-3 border-top border-secondary">
