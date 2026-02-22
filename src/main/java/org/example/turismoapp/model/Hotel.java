@@ -62,6 +62,15 @@ public class Hotel {
      */
     private Double longitud;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean admiteMascotas;
+
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean tieneSpa;
+
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean incluyeDesayuno;
+
     /**
      * Lista de reservas asociadas a este hotel.
      */

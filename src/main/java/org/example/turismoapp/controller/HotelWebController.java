@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.example.turismoapp.dto.ClimaDTO;
 import org.example.turismoapp.dto.HotelResponse;
 import org.example.turismoapp.dto.PronosticoDiarioDTO;
+import org.example.turismoapp.model.Hotel;
 import org.example.turismoapp.service.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.util.List;
@@ -26,12 +28,28 @@ public class HotelWebController {
     private final ClimaService climaService;
 
     @GetMapping
-    public String listarHoteles(Model model, Principal principal) {
-        model.addAttribute("listaHoteles", hotelService.findAll());
+    public String listarHoteles(
+            @RequestParam(required = false) String ubicacion,
+            @RequestParam(required = false) Double precioMin,
+            @RequestParam(required = false) Double precioMax,
+            @RequestParam(required = false) Integer estrellas,
+            @RequestParam(required = false) Boolean admiteMascotas,
+            @RequestParam(required = false) Boolean tieneSpa,
+            Model model) {
 
-        if (principal != null) {
-            model.addAttribute("favoritosIds", favoritoService.obtenerIdsFavoritos(principal.getName()));
-        }
+        List<HotelResponse> hoteles = hotelService.buscarConFiltros(
+                ubicacion, precioMin, precioMax, estrellas, admiteMascotas, tieneSpa
+        );
+
+        model.addAttribute("listaHoteles", hoteles);
+
+        model.addAttribute("ubicacionFiltro", ubicacion);
+        model.addAttribute("precioMinFiltro", precioMin);
+        model.addAttribute("precioMaxFiltro", precioMax);
+        model.addAttribute("estrellasFiltro", estrellas);
+        model.addAttribute("mascotasFiltro", admiteMascotas != null ? admiteMascotas : false);
+        model.addAttribute("spaFiltro", tieneSpa != null ? tieneSpa : false);
+
         return "hoteles";
     }
 
