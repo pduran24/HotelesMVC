@@ -22,6 +22,7 @@ public record HotelResponse(
         BigDecimal precioNoche,
         List<String> imagenes,
         Double notaMedia,
-        List<ResenaDTO> resenas
-) {
-}
+        List<ResenaDTO> resenas,
+        Double latitud,
+        Double longitud
+) {}

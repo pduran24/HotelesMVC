@@ -92,17 +92,20 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
+<script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
         const btnLista = document.getElementById('btn-lista');
         const btnMapa = document.getElementById('btn-mapa');
         const vistaLista = document.getElementById('vista-lista');
         const vistaMapa = document.getElementById('vista-mapa');
 
+        // 1. INYECCIÓN DE DATOS: Thymeleaf convierte tu List<HotelResponse> en un Array JSON
+        const hoteles = /*[[${listaHoteles}]]*/ [];
+
         let mapaInicializado = false;
         let miMapa = null;
 
-        // Coordenadas centrales aproximadas del Pirineo para la vista inicial
+        // Coordenadas centrales del Pirineo
         const centroPirineos = [42.6333, 0.7833];
 
         btnMapa.addEventListener('click', function() {
@@ -115,11 +118,40 @@
             vistaMapa.classList.remove('d-none');
 
             if (!mapaInicializado) {
+                // Inicializar mapa
                 miMapa = L.map('mapaHoteles').setView(centroPirineos, 8);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; OpenStreetMap contributors'
                 }).addTo(miMapa);
+
+                // ==========================================
+                // 2. GENERACIÓN DINÁMICA DE PINES
+                // ==========================================
+                hoteles.forEach(hotel => {
+                    if (hotel.latitud && hotel.longitud) {
+
+                        const marker = L.marker([hotel.latitud, hotel.longitud]).addTo(miMapa);
+
+                        const imagenUrl = (hotel.imagenes && hotel.imagenes.length > 0)
+                            ? hotel.imagenes[0]
+                            : 'https://picsum.photos/seed/' + hotel.id + '/200/120";';
+
+                        const popupContent = `
+                            <div style="width: 200px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                                <img src="${imagenUrl}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px; mb-2">
+                                <h6 style="margin: 8px 0 4px 0; font-weight: bold; color: #333;">${hotel.nombre}</h6>
+                                <p style="margin: 0; font-size: 0.85rem; color: #666;">⭐ ${hotel.estrellas} Estrellas</p>
+                                <p style="margin: 4px 0 10px 0; font-weight: bold; color: #2e7d32;">${hotel.precioNoche} €/noche</p>
+                                <a href="/hoteles/${hotel.id}" class="btn btn-sm btn-rustico text-white w-100" style="font-size: 0.8rem; background-color: #d84315; border: none; padding: 5px; border-radius: 4px; display: block; text-align: center; text-decoration: none;">
+                                    Ver Detalles
+                                </a>
+                            </div>
+                        `;
+
+                        marker.bindPopup(popupContent);
+                    }
+                });
 
                 mapaInicializado = true;
             } else {
