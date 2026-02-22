@@ -8,9 +8,28 @@
 
 <div class="container py-5">
 
-    <h2 class="text-white fw-bold mb-4">
-        <i class="bi bi-calendar-check text-warning me-2"></i>Mis Escapadas
-    </h2>
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <h2 class="text-white fw-bold mb-0">
+            <i class="bi bi-calendar-check text-warning me-2"></i>Mis Escapadas
+        </h2>
+
+        <div class="btn-group shadow-sm" role="group" aria-label="Filtro de reservas" th:unless="${reservas.isEmpty()}">
+            <button type="button" class="btn btn-rustico filter-btn active" data-filter="TODAS">
+                Todas
+            </button>
+            <button type="button" class="btn btn-outline-light filter-btn" data-filter="CONFIRMADA">
+                <i class="bi bi-check-circle me-1"></i>Confirmadas
+            </button>
+            <button type="button" class="btn btn-outline-light filter-btn" data-filter="CANCELADA">
+                <i class="bi bi-x-circle me-1"></i>Canceladas
+            </button>
+        </div>
+    </div>
+
+    <div th:if="${param.cancelada}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i> Tu reserva ha sido cancelada correctamente.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
     <div th:if="${reservas.isEmpty()}" class="text-center py-5">
         <div class="mb-3">
@@ -22,15 +41,16 @@
     </div>
 
     <div class="row g-4" th:unless="${reservas.isEmpty()}">
-        <div class="col-md-6 col-xl-4" th:each="reserva : ${reservas}">
 
-            <div class="card card-detalle h-100 position-relative">
+        <div class="col-md-6 col-xl-4 reserva-item" th:each="reserva : ${reservas}" th:data-estado="${reserva.estado.name()}">
 
-                    <span class="position-absolute top-0 end-0 m-3 badge rounded-pill"
-                          th:classappend="${reserva.estado.name() == 'CONFIRMADA' ? 'bg-success' : 'bg-danger'}"
-                          th:text="${reserva.estado}">
-                        CONFIRMADA
-                    </span>
+            <div class="card card-detalle h-100 position-relative" th:style="${reserva.estado.name() == 'CANCELADA' ? 'opacity: 0.75;' : ''}">
+
+                <span class="position-absolute top-0 end-0 m-3 badge rounded-pill shadow"
+                      th:classappend="${reserva.estado.name() == 'CONFIRMADA' ? 'bg-success' : 'bg-danger'}"
+                      th:text="${reserva.estado}">
+                    CONFIRMADA
+                </span>
 
                 <div class="card-body">
                     <h5 class="card-title fw-bold text-warning mb-3" th:text="${reserva.hotelNombre}">
@@ -40,46 +60,123 @@
                     <div class="d-flex align-items-center mb-2">
                         <i class="bi bi-calendar-range me-2 text-light opacity-50"></i>
                         <span class="text-white">
-                                <span th:text="${#temporals.format(reserva.fechaEntrada(), 'dd MMM yyyy')}"></span>
-                                &rarr;
-                                <span th:text="${#temporals.format(reserva.fechaSalida(), 'dd MMM yyyy')}"></span>
-                            </span>
+                            <span th:text="${#temporals.format(reserva.fechaEntrada(), 'dd MMM yyyy')}"></span>
+                            &rarr;
+                            <span th:text="${#temporals.format(reserva.fechaSalida(), 'dd MMM yyyy')}"></span>
+                        </span>
                     </div>
 
                     <div class="d-flex align-items-center mb-3">
                         <i class="bi bi-moon-stars me-2 text-light opacity-50"></i>
                         <span class="text-light">
-                                <span th:text="${reserva.numeroDias}">3</span> noches
-                            </span>
+                            <span th:text="${reserva.numeroDias}">3</span> noches
+                        </span>
                     </div>
 
                     <hr class="border-secondary opacity-25">
 
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="text-muted small">Precio Total</span>
-                        <span class="fs-4 fw-bold text-success">
-                                <span th:text="${reserva.precioTotal}">350.00</span>€
-                            </span>
+                        <span class="fs-4 fw-bold" th:classappend="${reserva.estado.name() == 'CONFIRMADA' ? 'text-success' : 'text-muted text-decoration-line-through'}">
+                            <span th:text="${reserva.precioTotal}">350.00</span>€
+                        </span>
                     </div>
                 </div>
 
                 <div class="card-footer border-secondary bg-transparent d-flex gap-2">
-                    <button class="btn btn-outline-light btn-sm w-100">
-                        <i class="bi bi-eye"></i> Ver Detalles
-                    </button>
+
+                    <a th:href="@{/reservas/detalles/{id}(id=${reserva.id})}" class="btn btn-outline-light btn-sm w-100">
+                        <i class="bi bi-ticket-detailed me-1"></i> Ver Bono
+                    </a>
+
                     <button th:if="${reserva.estado.name() == 'CONFIRMADA'}"
-                            class="btn btn-outline-danger btn-sm"
+                            type="button"
+                            class="btn btn-outline-danger btn-sm h-100"
+                            data-bs-toggle="modal"
+                            th:data-bs-target="'#modalCancelar-' + ${reserva.id}"
                             title="Cancelar Reserva">
                         <i class="bi bi-x-lg"></i>
                     </button>
                 </div>
             </div>
 
+            <div th:if="${reserva.estado.name() == 'CONFIRMADA'}" class="modal fade" th:id="'modalCancelar-' + ${reserva.id}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content" style="background-color: var(--tarjeta-oscura); border: 1px solid var(--madera-clara);">
+                        <div class="modal-header border-secondary">
+                            <h5 class="modal-title text-light fw-bold"><i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Cancelar Reserva</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body text-light">
+                            <p>¿Estás completamente seguro de que deseas cancelar tu escapada a <strong class="text-warning" th:text="${reserva.hotelNombre}">Hotel</strong>?</p>
+                            <p class="text-muted small mb-0">Esta acción no se puede deshacer. Perderás tu plaza para las fechas seleccionadas.</p>
+                        </div>
+                        <div class="modal-footer border-secondary">
+                            <button type="button" class="btn btn-outline-light fw-bold" data-bs-dismiss="modal">Mantener Reserva</button>
+                            <form th:action="@{/reservas/cancelar}" method="post">
+                                <input type="hidden" name="reservaId" th:value="${reserva.id}">
+                                <button type="submit" class="btn btn-danger fw-bold"><i class="bi bi-trash-fill me-2"></i>Sí, Cancelar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
+    </div>
+
+    <div id="noResultsMsg" class="text-center py-5 d-none">
+        <i class="bi bi-search text-muted display-4 d-block mb-3"></i>
+        <h5 class="text-light">No hay reservas en este estado</h5>
     </div>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const reservas = document.querySelectorAll('.reserva-item');
+        const noResultsMsg = document.getElementById('noResultsMsg');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+
+                // 1. Cambiar los estilos del botón activo
+                filterBtns.forEach(b => {
+                    b.classList.remove('btn-rustico', 'active');
+                    b.classList.add('btn-outline-light');
+                });
+                btn.classList.remove('btn-outline-light');
+                btn.classList.add('btn-rustico', 'active');
+
+                // 2. Obtener el valor del filtro seleccionado (TODAS, CONFIRMADA, CANCELADA)
+                const filterValue = btn.getAttribute('data-filter');
+                let visibles = 0;
+
+                // 3. Mostrar/Ocultar tarjetas
+                reservas.forEach(item => {
+                    const estadoReserva = item.getAttribute('data-estado');
+
+                    if (filterValue === 'TODAS' || estadoReserva === filterValue) {
+                        item.style.display = 'block';
+                        visibles++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                // 4. Mostrar mensaje si no hay resultados para ese filtro
+                if (visibles === 0) {
+                    noResultsMsg.classList.remove('d-none');
+                } else {
+                    noResultsMsg.classList.add('d-none');
+                }
+            });
+        });
+    });
+</script>
+
 </body>
 </html>
