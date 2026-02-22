@@ -160,6 +160,12 @@ public class ReservaService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public Reserva obtenerReservaEntidad(Long id) {
+        return reservaRepository.findById(id)
+                .orElseThrow(() -> new ReservaNoEncontradaException("Reserva con id " + id + " no encontrada"));
+    }
+
     /**
      * Convierte una entidad Reserva a un DTO ReservaResponse.
      *

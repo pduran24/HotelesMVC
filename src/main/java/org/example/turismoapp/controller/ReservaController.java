@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.turismoapp.dto.ReservaRequest;
 import org.example.turismoapp.dto.ReservaResponse;
 import org.example.turismoapp.model.Cliente;
+import org.example.turismoapp.model.Reserva;
 import org.example.turismoapp.repository.ClienteRepository;
 import org.example.turismoapp.service.ReservaService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -58,5 +59,24 @@ public class ReservaController {
             redirectAttributes.addFlashAttribute("error", "Error al reservar: " + e.getMessage());
             return "redirect:/hoteles/" + hotelId;
         }
+    }
+
+    @PostMapping("/cancelar")
+    public String cancelarReserva(@RequestParam Long reservaId) {
+        reservaService.cancelarReserva(reservaId);
+
+        return "redirect:/reservas/mis-reservas?cancelada=true";
+    }
+
+    @GetMapping("/detalles/{id}")
+    public String verDetallesReserva(@PathVariable Long id, Model model, Principal principal) {
+        Reserva reserva = reservaService.obtenerReservaEntidad(id);
+
+        if (principal == null || !reserva.getCliente().getEmail().equals(principal.getName())) {
+            return "redirect:/reservas/mis-reservas";
+        }
+
+        model.addAttribute("reserva", reserva);
+        return "reserva-detalle";
     }
 }
