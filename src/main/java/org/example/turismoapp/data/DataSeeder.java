@@ -1,10 +1,7 @@
 package org.example.turismoapp.data;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.turismoapp.model.Cliente;
-import org.example.turismoapp.model.Hotel;
-import org.example.turismoapp.model.Reserva;
-import org.example.turismoapp.model.UserEntity;
+import org.example.turismoapp.model.*;
 import org.example.turismoapp.repository.ClienteRepository;
 import org.example.turismoapp.repository.HotelRepository;
 import org.example.turismoapp.repository.ReservaRepository;
@@ -55,6 +52,7 @@ public class DataSeeder implements CommandLineRunner {
             crearAdmin();
         }
         crearUsuariosLogin();
+        crearImagenes();
     }
 
 
@@ -91,11 +89,7 @@ public class DataSeeder implements CommandLineRunner {
 
                 // --- PIRINEO NAVARRO ---
                 buildHotel("Hotel Roncesvalles", "Roncesvalles", "Antiguo hospital de peregrinos reformado. Historia medieval y confort moderno. Inicio del Camino Francés.", 3, "70.00", 43.0092, -1.3195),
-                buildHotel("Isaba Hotel", "Valle del Roncal", "Apartamentos turísticos ideales para esquí de fondo y senderismo por la Selva de Irati.", 3, "80.00", 42.8605, -0.9232),
-
-                // --- EJEMPLO SIN UBICACIÓN EXACTA (Para probar nulls) ---
-                buildHotel("Hostal de Prueba", "Pirineo Desconocido", "Ejemplo para probar el mapa sin coordenadas.", 2, "40.00", null, null)
-
+                buildHotel("Isaba Hotel", "Valle del Roncal", "Apartamentos turísticos ideales para esquí de fondo y senderismo por la Selva de Irati.", 3, "80.00", 42.8605, -0.9232)
         );
         hotelRepository.saveAll(hoteles);
         log.info("Hoteles cargados correctamente.");
@@ -180,5 +174,68 @@ public class DataSeeder implements CommandLineRunner {
             userRepository.save(admin);
         }
         log.info("Usuarios de seguridad (Login) creados.");
+    }
+
+    private void crearImagenes() {
+        // --- VALLE DE ARÁN ---
+        agregarImagenesHotel("Gran Hotel La Florida", "florida", "la_florida", "Vista del Gran Hotel La Florida",4);
+        agregarImagenesHotel("Parador de Vielha", "vielha", "vielha", "Vista del Parador de Vielha",4);
+        agregarImagenesHotel("Hotel Val de Neu", "val_de_neu", "val_de_neu", "Instalaciones del Hotel Val de Neu",4);
+        agregarImagenesHotel("Refugio Rosta", "rosta", "rosta", "Interior del Refugio Rosta",4);
+        agregarImagenesHotel("Posada Real de Santa Maria", "santa_maria", "santa_maria", "Exterior de la Posada",4);
+        agregarImagenesHotel("Camping Verneda", "verneda", "verneda", "Bungalows del Camping Verneda",4);
+
+        // --- PIRINEO ARAGONÉS ---
+        agregarImagenesHotel("Gran Hotel Balneario de Panticosa", "balneario_panticosa", "balneario_panticosa", "Instalaciones del Balneario",4);
+        agregarImagenesHotel("Balneario de Panticosa Continental", "continental_panticosa", "continental_panticosa", "Diseño interior del Continental",4);
+        agregarImagenesHotel("Hotel Ciria", "ciria", "ciria", "Ambiente del Hotel Ciria", 4);
+        agregarImagenesHotel("Hotel Sommos Aneto", "sommos_aneto", "sommos_aneto", "Vistas desde el Sommos Aneto", 4);
+        agregarImagenesHotel("Barceló Monasterio de Boltaña", "monasterio_boltana", "monasterio_boltana", "Spa del Monasterio de Boltaña", 4);
+        agregarImagenesHotel("Refugio de Góriz", "goriz", "goriz", "Vistas al Monte Perdido desde Góriz", 2);
+        agregarImagenesHotel("Hotel Edelweiss", "edelweiss", "edelweiss", "Hotel Edelweiss a pie de pistas", 4);
+        agregarImagenesHotel("Hotel & Spa Real Badaguás", "badaguas", "badaguas", "Campo de golf del Real Badaguás", 2);
+        agregarImagenesHotel("Casa Rural El Callizo", "callizo", "callizo", "Encanto rural de El Callizo", 2);
+        agregarImagenesHotel("Hotel La Casueña", "casuena", "casuena", "Vistas desde La Casueña", 4);
+        agregarImagenesHotel("Albergue de Canfranc", "canfranc", "canfranc", "Instalaciones del Albergue", 2);
+        agregarImagenesHotel("Hotel Tierra de Biescas", "tierra_biescas", "tierra_biescas", "Jardines de Tierra de Biescas", 2);
+        agregarImagenesHotel("Refugio de Cap de Llauset", "llauset", "llauset", "El moderno refugio de Cap de Llauset", 2);
+
+        // --- ANDORRA Y CATALUÑA ---
+        agregarImagenesHotel("Sport Hotel Hermitage & Spa", "hermitage", "hermitage", "Lujo en el Sport Hotel Hermitage", 4);
+        agregarImagenesHotel("Hotel Nordic", "nordic", "nordic", "Piscina del Hotel Nordic", 4);
+        agregarImagenesHotel("Hotel Fontanals Golf", "fontanals", "fontanals", "Entorno del Fontanals Golf", 2);
+
+        // --- PIRINEO NAVARRO Y OTROS ---
+        agregarImagenesHotel("Hotel Roncesvalles", "roncesvalles", "roncesvalles", "Historia del Hotel Roncesvalles", 2);
+        agregarImagenesHotel("Isaba Hotel", "isaba", "isaba", "Apartamentos del Isaba Hotel", 4);
+    }
+
+    /**
+     * MÉTODO AUXILIAR: Añade exactamente 4 imágenes a un hotel si no tiene ninguna.
+     * @param nombreHotel Nombre exacto del hotel en la BD.
+     * @param carpeta Nombre de la carpeta dentro de static/images/
+     * @param prefijo Prefijo de los archivos (ej: "goriz" buscará "goriz_1.jpg", "goriz_2.jpg"...)
+     * @param altTextBase Texto alternativo base para accesibilidad.
+     */
+    private void agregarImagenesHotel(String nombreHotel, String carpeta, String prefijo, String altTextBase, int numFotos) {
+        Hotel hotel = hotelRepository.findByNombre(nombreHotel).orElse(null);
+
+        // Solo añadimos si el hotel existe y NO tiene imágenes todavía
+        if (hotel != null && hotel.getImagenes().isEmpty()) {
+
+            // Bucle mágico: solo iteramos las veces que le hayamos indicado
+            for (int i = 1; i <= numFotos; i++) {
+                HotelImagen img = HotelImagen.builder()
+                        .url("/images/" + carpeta + "/" + prefijo + "_" + i + ".jpg")
+                        .textoAlternativo(altTextBase + " - Foto " + i)
+                        .hotel(hotel)
+                        .build();
+
+                hotel.getImagenes().add(img);
+            }
+
+            hotelRepository.save(hotel);
+            log.info("📸 {} imágenes cargadas para: {}", numFotos, nombreHotel);
+        }
     }
 }
