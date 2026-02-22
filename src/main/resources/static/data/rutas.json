@@ -1,0 +1,182 @@
+[
+  {
+    "nombre": "Cola de Caballo (Ordesa)",
+    "dificultad": "Moderada",
+    "distanciaKm": 17.5,
+    "desnivelM": 450,
+    "latitud": 42.6416,
+    "longitud": -0.0566,
+    "color": "warning"
+  },
+  {
+    "nombre": "Ascenso al Aneto",
+    "dificultad": "Extrema",
+    "distanciaKm": 14.5,
+    "desnivelM": 1500,
+    "latitud": 42.6788,
+    "longitud": 0.6558,
+    "color": "danger"
+  },
+  {
+    "nombre": "Ruta de las Pasarelas del Vero",
+    "dificultad": "Fácil",
+    "distanciaKm": 3.2,
+    "desnivelM": 150,
+    "latitud": 42.1741,
+    "longitud": 0.0264,
+    "color": "success"
+  },
+  {
+    "nombre": "Ibón de Plan (Basa de la Mora)",
+    "dificultad": "Moderada",
+    "distanciaKm": 4.5,
+    "desnivelM": 300,
+    "latitud": 42.5486,
+    "longitud": 0.3168,
+    "color": "warning"
+  },
+  {
+    "nombre": "3 Ibones de Batisielles",
+    "dificultad": "Difícil",
+    "distanciaKm": 12.0,
+    "desnivelM": 750,
+    "latitud": 42.6669,
+    "longitud": 0.5055,
+    "color": "danger"
+  },
+  {
+    "nombre": "Monte Perdido desde Pradera de Ordesa",
+    "dificultad": "Extrema",
+    "distanciaKm": 21.0,
+    "desnivelM": 1700,
+    "latitud": 42.6743,
+    "longitud": 0.0345,
+    "color": "danger"
+  },
+  {
+    "nombre": "Lagos de Ayous",
+    "dificultad": "Moderada",
+    "distanciaKm": 14.0,
+    "desnivelM": 800,
+    "latitud": 42.8655,
+    "longitud": -0.4382,
+    "color": "warning"
+  },
+  {
+    "nombre": "Circo de Gavarnie",
+    "dificultad": "Fácil",
+    "distanciaKm": 8.0,
+    "desnivelM": 200,
+    "latitud": 42.7361,
+    "longitud": -0.0104,
+    "color": "success"
+  },
+  {
+    "nombre": "Pic du Midi d’Ossau (vuelta completa)",
+    "dificultad": "Difícil",
+    "distanciaKm": 17.0,
+    "desnivelM": 900,
+    "latitud": 42.8353,
+    "longitud": -0.4325,
+    "color": "danger"
+  },
+  {
+    "nombre": "Ruta al Balneario de Panticosa – Ibones Azules",
+    "dificultad": "Moderada",
+    "distanciaKm": 11.5,
+    "desnivelM": 700,
+    "latitud": 42.7609,
+    "longitud": -0.2336,
+    "color": "warning"
+  },
+  {
+    "nombre": "Refugio de Góriz desde Ordesa",
+    "dificultad": "Difícil",
+    "distanciaKm": 18.0,
+    "desnivelM": 900,
+    "latitud": 42.6634,
+    "longitud": 0.0340,
+    "color": "danger"
+  },
+  {
+    "nombre": "Estany de Sant Maurici – Cascada de Ratera",
+    "dificultad": "Fácil",
+    "distanciaKm": 6.5,
+    "desnivelM": 250,
+    "latitud": 42.5876,
+    "longitud": 1.0032,
+    "color": "success"
+  },
+  {
+    "nombre": "Carros de Foc (tramo corto)",
+    "dificultad": "Difícil",
+    "distanciaKm": 15.0,
+    "desnivelM": 1000,
+    "latitud": 42.6030,
+    "longitud": 0.9370,
+    "color": "danger"
+  },
+  {
+    "nombre": "Lago de Certascan",
+    "dificultad": "Moderada",
+    "distanciaKm": 9.5,
+    "desnivelM": 600,
+    "latitud": 42.6630,
+    "longitud": 1.2595,
+    "color": "warning"
+  },
+  {
+    "nombre": "Pico Posets desde Ángel Orús",
+    "dificultad": "Extrema",
+    "distanciaKm": 19.0,
+    "desnivelM": 1350,
+    "latitud": 42.6548,
+    "longitud": 0.4042,
+    "color": "danger"
+  },
+  {
+    "nombre": "Faja de Pelay (Ordesa)",
+    "dificultad": "Difícil",
+    "distanciaKm": 21.5,
+    "desnivelM": 1000,
+    "latitud": 42.6428,
+    "longitud": -0.0375,
+    "color": "danger"
+  },
+  {
+    "nombre": "Selva de Irati – Embalse de Irabia",
+    "dificultad": "Fácil",
+    "distanciaKm": 7.0,
+    "desnivelM": 150,
+    "latitud": 42.9834,
+    "longitud": -1.1795,
+    "color": "success"
+  },
+  {
+    "nombre": "Pico Midi d’Ossau (ascenso clásico)",
+    "dificultad": "Extrema",
+    "distanciaKm": 10.0,
+    "desnivelM": 1200,
+    "latitud": 42.8353,
+    "longitud": -0.4325,
+    "color": "danger"
+  },
+  {
+    "nombre": "Camino al Ibón de Piedrafita",
+    "dificultad": "Moderada",
+    "distanciaKm": 9.0,
+    "desnivelM": 500,
+    "latitud": 42.7354,
+    "longitud": -0.2952,
+    "color": "warning"
+  },
+  {
+    "nombre": "Valle de Benasque – Forau de Aigualluts",
+    "dificultad": "Fácil",
+    "distanciaKm": 5.5,
+    "desnivelM": 200,
+    "latitud": 42.6901,
+    "longitud": 0.6410,
+    "color": "success"
+  }
+]

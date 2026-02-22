@@ -6,45 +6,30 @@
 
     <style>
         /* --- ESTILOS DEL CARRUSEL DE RESEÑAS --- */
-        #carruselResenas .carousel-control-prev,
-        #carruselResenas .carousel-control-next {
-            opacity: 1;
-            width: auto;
+        #carruselResenas .carousel-control-prev, #carruselResenas .carousel-control-next { opacity: 1; width: auto; }
+        #carruselResenas .carousel-control-prev-icon, #carruselResenas .carousel-control-next-icon {
+            background-color: var(--madera-clara); border-radius: 50%; width: 2.5rem; height: 2.5rem;
+            background-size: 45%, 45%; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3); transition: all 0.3s ease;
         }
-
-        #carruselResenas .carousel-control-prev-icon,
-        #carruselResenas .carousel-control-next-icon {
-            background-color: var(--madera-clara);
-            border-radius: 50%;
-            width: 2.5rem;
-            height: 2.5rem;
-            background-size: 45%, 45%;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @media (min-width: 992px) {
-            #carruselResenas .carousel-control-prev {
-                left: -3rem;
-            }
-            #carruselResenas .carousel-control-next {
-                right: -3rem;
-            }
-        }
-
         #carruselResenas .carousel-control-prev:hover .carousel-control-prev-icon,
         #carruselResenas .carousel-control-next:hover .carousel-control-next-icon {
-            transform: scale(1.1);
-            background-color: #e68a00;
+            transform: scale(1.1); background-color: var(--naranja-fuego);
         }
 
-        /* Efecto hover del widget de clima */
+        /* --- EFECTOS HOVER --- */
         .widget-clima:hover {
-            transform: translateY(-2px);
-            border-color: var(--naranja-fuego) !important;
-            box-shadow: 0 4px 12px rgba(216, 67, 21, 0.2) !important;
-            cursor: pointer;
+            transform: translateY(-2px); border-color: var(--naranja-fuego) !important;
+            box-shadow: 0 4px 12px rgba(216, 67, 21, 0.2) !important; cursor: pointer;
         }
+        .hover-ruta { transition: all 0.2s ease-in-out; }
+        .hover-ruta:hover {
+            transform: translateY(-4px); border-color: var(--naranja-fuego) !important;
+            box-shadow: 0 4px 15px rgba(216, 67, 21, 0.2) !important;
+        }
+        /* Scrollbar personalizado para las rutas */
+        #rutas-contenedor::-webkit-scrollbar { width: 6px; }
+        #rutas-contenedor::-webkit-scrollbar-track { background: var(--fondo-oscuro); border-radius: 4px; }
+        #rutas-contenedor::-webkit-scrollbar-thumb { background: var(--madera-clara); border-radius: 4px; }
     </style>
 </head>
 
@@ -57,38 +42,33 @@
 <div class="container pb-5">
 
     <div class="mb-4">
-        <a th:href="@{/hoteles}" class="link-volver fw-bold">
-            ← Volver al listado de refugios
-        </a>
+        <a th:href="@{/hoteles}" class="link-volver fw-bold">← Volver al listado de refugios</a>
     </div>
 
-    <div class="card card-detalle mb-5" style="border-radius: 12px; overflow: hidden;">
-        <div class="row g-0">
+    <div class="row g-4 mb-5">
 
-            <div class="col-md-6 position-relative">
-                <div id="carruselHotel" class="carousel slide h-100" data-bs-ride="carousel">
+        <div class="col-lg-7 d-flex flex-column gap-4">
+
+            <div class="position-relative shadow-sm" style="border-radius: 12px; overflow: hidden; border: 1px solid var(--madera-clara);">
+                <div id="carruselHotel" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-indicators" th:if="${hotel.imagenes != null and !hotel.imagenes.isEmpty()}">
                         <button th:each="img, iterStat : ${hotel.imagenes}" type="button" data-bs-target="#carruselHotel" th:data-bs-slide-to="${iterStat.index}" th:classappend="${iterStat.first} ? 'active' : ''"></button>
                     </div>
-                    <div class="carousel-inner h-100">
+                    <div class="carousel-inner">
                         <th:block th:if="${hotel.imagenes != null and !hotel.imagenes.isEmpty()}">
-                            <div th:each="img, iterStat : ${hotel.imagenes}" class="carousel-item h-100" th:classappend="${iterStat.first} ? 'active' : ''">
-                                <img th:src="${img}" class="d-block w-100" alt="Foto del refugio" style="height: 500px; object-fit: cover;">
+                            <div th:each="img, iterStat : ${hotel.imagenes}" class="carousel-item" th:classappend="${iterStat.first} ? 'active' : ''">
+                                <img th:src="${img}" class="d-block w-100" alt="Foto del refugio" style="height: 450px; object-fit: cover;">
                             </div>
                         </th:block>
                         <th:block th:if="${hotel.imagenes == null or hotel.imagenes.isEmpty()}">
-                            <div class="carousel-item active h-100">
-                                <img th:src="@{'https://picsum.photos/seed/' + ${hotel.id} + '/800/600'}" class="d-block w-100" alt="Foto por defecto" style="height: 500px; object-fit: cover;">
+                            <div class="carousel-item active">
+                                <img th:src="@{'https://picsum.photos/seed/' + ${hotel.id} + '/800/600'}" class="d-block w-100" alt="Foto por defecto" style="height: 450px; object-fit: cover;">
                             </div>
                         </th:block>
                     </div>
                     <th:block th:if="${hotel.imagenes != null and hotel.imagenes.size() > 1}">
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carruselHotel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carruselHotel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        </button>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carruselHotel" data-bs-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span></button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carruselHotel" data-bs-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span></button>
                     </th:block>
                 </div>
 
@@ -103,75 +83,91 @@
                 </div>
             </div>
 
-            <div class="col-md-6 d-flex flex-column">
-                <div class="card-body p-4 p-md-5">
+            <div class="card card-detalle p-4 p-md-5" style="border-radius: 12px;">
+                <p class="text-muted fs-5 mb-3">⭐ <span th:text="${hotel.estrellas}">4</span> Estrellas</p>
+                <h4 class="fw-bold mb-3" style="color: var(--madera-clara);">Sobre este refugio</h4>
+                <p class="card-text text-light mb-5" th:text="${hotel.descripcion}" style="line-height: 1.8;">Descripción...</p>
 
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h2 class="card-title fw-bold text-light mb-0" th:text="${hotel.nombre}">Nombre Hotel</h2>
-                        <span class="badge precio-badge px-3 py-2 fs-5" th:text="${hotel.precioNoche} + ' €/noche'">100 €</span>
+                <div class="pt-4 border-top border-secondary">
+                    <h5 class="fw-bold mb-4 text-light"><i class="bi bi-calendar-check text-warning me-2"></i>Planifica tu aventura</h5>
+                    <div th:if="${error}" class="alert alert-danger mb-3" th:text="${error}"></div>
+                    <div id="js-error-alert" class="alert alert-danger d-flex align-items-center d-none" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"></i><div id="js-error-text"></div>
                     </div>
 
-                    <div class="d-flex align-items-center flex-wrap gap-3 mb-4">
-                        <p class="text-muted fs-5 mb-0 d-flex align-items-center">
-                            📍 <span th:text="${hotel.ubicacion}">Ubicación</span>
-
-                            <button id="btn-ruta" class="btn btn-sm btn-outline-warning rounded-pill ms-3 d-none shadow-sm" data-bs-toggle="modal" data-bs-target="#modalRuta" style="transition: all 0.3s;">
-                                <span id="distancia-text">
-                                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-                                    Calculando ruta...
-                                </span>
-                            </button>
-                        </p>
-
-                        <a th:if="${clima != null}"
-                           th:href="@{/hoteles/{id}/clima(id=${hotel.id})}"
-                           class="ms-md-auto d-flex align-items-center bg-dark border border-secondary rounded-pill px-3 py-2 shadow-sm text-decoration-none widget-clima"
-                           style="transition: all 0.2s ease; width: fit-content;">
-
-                            <i class="bi fs-4 me-2" th:classappend="${clima.iconoCss}"></i>
-                            <div class="d-flex flex-column lh-1 border-end border-secondary pe-3 me-3">
-                                <span class="text-muted" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">Ahora mismo</span>
-                                <span class="fw-bold text-white fs-5">
-                                    <span th:text="${clima.temperatura}">5.0</span>°C
-                                </span>
-                            </div>
-                            <span class="text-light fw-medium" th:text="${clima.descripcion}">Despejado</span>
-                            <i class="bi bi-chevron-right text-muted ms-3"></i>
-                        </a>
-                    </div>
-
-                    <p class="text-muted fs-5 mb-4">⭐ <span th:text="${hotel.estrellas}">4</span> Estrellas</p>
-
-                    <h5 class="fw-bold" style="color: var(--madera-clara);">Sobre este refugio</h5>
-                    <p class="card-text text-light mb-4" th:text="${hotel.descripcion}" style="line-height: 1.8;">Descripción...</p>
-
-                    <div class="mt-auto pt-3 border-top border-secondary">
-                        <div th:if="${error}" class="alert alert-danger mb-3" th:text="${error}"></div>
-                        <div id="js-error-alert" class="alert alert-danger d-flex align-items-center d-none" role="alert">
-                            <i class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"></i>
-                            <div id="js-error-text"></div>
+                    <form th:action="@{/reservas/crear}" method="post" onsubmit="return validarFechas()">
+                        <input type="hidden" name="hotelId" th:value="${hotel.id}">
+                        <div class="mb-4">
+                            <label for="rangoFechas" class="form-label text-muted small fw-bold">FECHAS DE ESTANCIA</label>
+                            <input type="text" id="rangoFechas" class="form-control bg-dark text-white border-secondary text-center fs-5 p-3" placeholder="Haz clic para elegir" required>
                         </div>
-                        <form th:action="@{/reservas/crear}" method="post" onsubmit="return validarFechas()">
-                            <input type="hidden" name="hotelId" th:value="${hotel.id}">
-                            <div class="mb-3">
-                                <label for="rangoFechas" class="form-label fw-bold" style="color: var(--madera-clara);">
-                                    <i class="bi bi-calendar-range me-2"></i>Selecciona tus fechas
-                                </label>
-                                <input type="text" id="rangoFechas" class="form-control bg-dark text-white border-secondary text-center fs-5" placeholder="Haz clic para elegir" required>
-                            </div>
-                            <input type="hidden" id="fechaEntrada" name="fechaEntrada">
-                            <input type="hidden" id="fechaSalida" name="fechaSalida">
-                            <div class="d-grid gap-2 mt-3">
-                                <button type="submit" class="btn btn-rustico btn-lg fw-bold"><i class="bi bi-check-circle me-2"></i> Confirmar Reserva</button>
-                            </div>
-                        </form>
-                    </div>
+                        <input type="hidden" id="fechaEntrada" name="fechaEntrada">
+                        <input type="hidden" id="fechaSalida" name="fechaSalida">
+                        <button type="submit" class="btn btn-rustico btn-lg fw-bold w-100"><i class="bi bi-check-circle me-2"></i> Confirmar Reserva</button>
+                    </form>
                 </div>
             </div>
+
+        </div>
+
+        <div class="col-lg-5 d-flex flex-column gap-4">
+
+            <div class="card card-detalle p-4" style="border-radius: 12px;">
+                <h2 class="fw-bold text-light mb-3 lh-1" th:text="${hotel.nombre}">Nombre Hotel</h2>
+                <div class="mb-4">
+                    <span class="badge precio-badge px-3 py-2 fs-5" th:text="${hotel.precioNoche} + ' €/noche'">100 €</span>
+                </div>
+
+                <p class="text-muted fs-5 mb-3">📍 <span th:text="${hotel.ubicacion}">Ubicación</span></p>
+
+                <button id="btn-ruta" class="btn btn-outline-warning w-100 mb-4 fw-bold p-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalRuta">
+                    <span id="distancia-text">
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Buscando tu ubicación...
+                    </span>
+                </button>
+
+                <a th:if="${clima != null}" th:href="@{/hoteles/{id}/clima(id=${hotel.id})}" class="d-flex align-items-center bg-dark border border-secondary rounded-4 p-3 shadow-sm text-decoration-none widget-clima w-100" style="transition: all 0.2s ease;">
+                    <i class="bi fs-1 me-3" th:classappend="${clima.iconoCss}"></i>
+                    <div class="d-flex flex-column lh-1 border-end border-secondary pe-3 me-3">
+                        <span class="text-muted" style="font-size: 0.7rem; text-transform: uppercase;">Ahora</span>
+                        <span class="fw-bold text-white fs-3"><span th:text="${clima.temperatura}">5.0</span>°C</span>
+                    </div>
+                    <span class="text-light fw-medium" th:text="${clima.descripcion}">Despejado</span>
+                    <i class="bi bi-chevron-right text-muted ms-auto fs-4"></i>
+                </a>
+            </div>
+
+            <div class="card card-detalle p-4 flex-grow-1" style="border-radius: 12px;">
+
+                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
+                    <h5 class="fw-bold mb-0" style="color: var(--madera-clara);">
+                        <i class="bi bi-signpost-2-fill me-2 text-warning"></i>Rutas
+                    </h5>
+                    <div class="d-flex align-items-center gap-2">
+                        <input type="range" class="form-range" id="filtro-distancia" min="5" max="150" step="5" value="30" style="width: 100px;">
+                        <span id="valor-distancia" class="badge bg-secondary" style="width: 60px;">30 km</span>
+                    </div>
+                </div>
+
+                <div id="rutas-loading" class="row g-3">
+                    <div class="col-12" th:each="i : ${#numbers.sequence(1, 3)}">
+                        <div class="card bg-dark border-secondary p-3 placeholder-glow">
+                            <span class="placeholder col-8 bg-secondary mb-3 rounded"></span>
+                            <div class="d-flex justify-content-between">
+                                <span class="placeholder col-5 bg-secondary rounded"></span>
+                                <span class="placeholder col-4 bg-secondary rounded"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="rutas-contenedor" class="row g-3 d-none" style="max-height: 400px; overflow-y: auto; overflow-x: hidden; padding-right: 5px;"></div>
+            </div>
+
         </div>
     </div>
 
-    <div class="mt-5 pt-3">
+    <div class="mt-4 pt-4 border-top border-secondary">
         <div class="d-flex align-items-center mb-4">
             <h3 class="fw-bold mb-0" style="color: var(--madera-clara);">Valoraciones de viajeros</h3>
             <div class="ms-3 px-3 py-1 bg-dark rounded-pill border border-secondary" th:if="${hotel.resenas != null and !hotel.resenas.isEmpty()}">
@@ -190,7 +186,7 @@
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <div class="d-flex align-items-center">
-                                            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-3" style="width: 45px; height: 45px; box-shadow: inset 0 0 10px rgba(0,0,0,0.2);" th:text="${#strings.substring(resena.nombreAutor, 0, 1).toUpperCase()}">A</div>
+                                            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-3" style="width: 45px; height: 45px;" th:text="${#strings.substring(resena.nombreAutor, 0, 1).toUpperCase()}">A</div>
                                             <div><h6 class="mb-0 text-light fw-bold" th:text="${resena.nombreAutor}">Nombre</h6><small class="text-muted" th:text="${resena.fecha}">Fecha</small></div>
                                         </div>
                                         <div><i th:each="i : ${#numbers.sequence(1, 5)}" class="bi text-warning" th:classappend="${i <= resena.puntuacion} ? 'bi-star-fill' : 'bi-star'"></i></div>
@@ -204,7 +200,7 @@
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <div class="d-flex align-items-center">
-                                            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-3" style="width: 45px; height: 45px; box-shadow: inset 0 0 10px rgba(0,0,0,0.2);" th:text="${#strings.substring(resena2.nombreAutor, 0, 1).toUpperCase()}">A</div>
+                                            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-3" style="width: 45px; height: 45px;" th:text="${#strings.substring(resena2.nombreAutor, 0, 1).toUpperCase()}">A</div>
                                             <div><h6 class="mb-0 text-light fw-bold" th:text="${resena2.nombreAutor}">Nombre</h6><small class="text-muted" th:text="${resena2.fecha}">Fecha</small></div>
                                         </div>
                                         <div><i th:each="i : ${#numbers.sequence(1, 5)}" class="bi text-warning" th:classappend="${i <= resena2.puntuacion} ? 'bi-star-fill' : 'bi-star'"></i></div>
@@ -217,8 +213,8 @@
                 </div>
             </div>
             <th:block th:if="${#lists.size(hotel.resenas) > 2}">
-                <button class="carousel-control-prev" type="button" data-bs-target="#carruselResenas" data-bs-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="visually-hidden">Anterior</span></button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carruselResenas" data-bs-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span><span class="visually-hidden">Siguiente</span></button>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carruselResenas" data-bs-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span></button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carruselResenas" data-bs-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span></button>
             </th:block>
         </div>
 
@@ -226,7 +222,7 @@
             <i class="bi bi-chat-square-text text-muted display-4 d-block mb-3"></i><h5>Aún no hay reseñas</h5><p class="text-muted mb-0">¡Sé el primero en alojarte y contarnos tu experiencia!</p>
         </div>
 
-        <div sec:authorize="isAuthenticated()" class="mt-5 p-4 border border-secondary rounded" style="background-color: var(--tarjeta-oscura); box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+        <div sec:authorize="isAuthenticated()" class="mt-5 p-4 border border-secondary rounded" style="background-color: var(--tarjeta-oscura);">
             <h4 class="text-light fw-bold mb-3"><i class="bi bi-pencil-square me-2 text-warning"></i><span th:text="${miResena != null} ? 'Edita tu experiencia' : 'Cuéntanos tu experiencia'"></span></h4>
             <form th:action="@{/resenas/crear}" method="post">
                 <input type="hidden" name="hotelId" th:value="${hotel.id}">
@@ -256,24 +252,19 @@
         </div>
     </div>
 
-</div> <div class="modal fade" id="modalRuta" tabindex="-1" aria-hidden="true">
+</div>
+
+<div class="modal fade" id="modalRuta" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content bg-dark border-secondary shadow-lg">
             <div class="modal-header border-secondary">
-                <h5 class="modal-title text-light fw-bold">
-                    <i class="bi bi-signpost-split-fill text-warning me-2"></i>Ruta hacia <span th:text="${hotel.nombre}">Refugio</span>
-                </h5>
+                <h5 class="modal-title text-light fw-bold"><i class="bi bi-signpost-split-fill text-warning me-2"></i>Ruta hacia <span th:text="${hotel.nombre}">Refugio</span></h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-            <div class="modal-body p-0">
-                <div id="mapaRuta" style="height: 400px; width: 100%; border-radius: 0;"></div>
-            </div>
+            <div class="modal-body p-0"><div id="mapaRuta" style="height: 400px; width: 100%; border-radius: 0;"></div></div>
             <div class="modal-footer border-secondary d-flex justify-content-between align-items-center">
                 <span class="text-muted fw-bold" id="ruta-info-modal">Distancia: -- km</span>
-
-                <a id="btn-google-maps" href="#" target="_blank" class="btn btn-rustico fw-bold">
-                    <i class="bi bi-google me-2"></i>Iniciar Navegación
-                </a>
+                <a id="btn-google-maps" href="#" target="_blank" class="btn btn-rustico fw-bold"><i class="bi bi-google me-2"></i>Iniciar Navegación</a>
             </div>
         </div>
     </div>
@@ -284,108 +275,179 @@
 <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
 
 <script th:inline="javascript">
-    const errorAlertBox = document.getElementById('js-error-alert');
-    const errorText = document.getElementById('js-error-text');
-    const inputEntrada = document.getElementById('fechaEntrada');
-    const inputSalida = document.getElementById('fechaSalida');
-    const fechasBloqueadas = /*[[${fechasOcupadas}]]*/ [];
-
-    flatpickr("#rangoFechas", {
-        mode: "range", minDate: "today", locale: "es", dateFormat: "d/m/Y", disable: fechasBloqueadas,
-        onChange: function(selectedDates, dateStr, instance) {
-            if (selectedDates.length === 2) {
-                inputEntrada.value = flatpickr.formatDate(selectedDates[0], "Y-m-d");
-                inputSalida.value = flatpickr.formatDate(selectedDates[1], "Y-m-d");
-                errorAlertBox.classList.add('d-none');
-            } else { inputEntrada.value = ""; inputSalida.value = ""; }
-        }
-    });
-
-    function validarFechas() {
-        if (!inputEntrada.value || !inputSalida.value) {
-            errorText.textContent = "Por favor, selecciona un rango de fechas completo (inicio y fin).";
-            errorAlertBox.classList.remove('d-none'); return false;
-        }
-        errorAlertBox.classList.add('d-none'); return true;
-    }
-
     document.addEventListener('DOMContentLoaded', function() {
+        // --- 1. LÓGICA DEL CALENDARIO ---
+        const errorAlertBox = document.getElementById('js-error-alert');
+        const errorText = document.getElementById('js-error-text');
+        const inputEntrada = document.getElementById('fechaEntrada');
+        const inputSalida = document.getElementById('fechaSalida');
+        const fechasBloqueadas = /*[[${fechasOcupadas}]]*/ [];
 
+        flatpickr("#rangoFechas", {
+            mode: "range", minDate: "today", locale: "es", dateFormat: "d/m/Y", disable: fechasBloqueadas,
+            onChange: function(selectedDates) {
+                if (selectedDates.length === 2) {
+                    inputEntrada.value = flatpickr.formatDate(selectedDates[0], "Y-m-d");
+                    inputSalida.value = flatpickr.formatDate(selectedDates[1], "Y-m-d");
+                    errorAlertBox.classList.add('d-none');
+                } else { inputEntrada.value = ""; inputSalida.value = ""; }
+            }
+        });
+
+        // --- 2. VARIABLES GLOBALES ---
         const hotelLat = /*[[${hotel.latitud}]]*/ null;
         const hotelLon = /*[[${hotel.longitud}]]*/ null;
         const hotelNombre = /*[[${hotel.nombre}]]*/ 'El Refugio';
 
+        // --- 3. BOTÓN DE DISTANCIA Y GEOLOCALIZACIÓN ---
         const btnRuta = document.getElementById('btn-ruta');
         const distanciaText = document.getElementById('distancia-text');
         const rutaInfoModal = document.getElementById('ruta-info-modal');
         const btnGoogleMaps = document.getElementById('btn-google-maps');
         const modalRutaElement = document.getElementById('modalRuta');
 
-        let userLat = null;
-        let userLon = null;
-        let mapaRutaInicializado = false;
-        let miMapaRuta = null;
+        let userLat = null, userLon = null, mapaRutaInicializado = false, miMapaRuta = null;
 
         if (navigator.geolocation && hotelLat != null && hotelLon != null) {
-            btnRuta.classList.remove('d-none'); // Mostramos el botón "Cargando..."
-
             navigator.geolocation.getCurrentPosition(
                 function(posicion) {
-                    userLat = posicion.coords.latitude;
-                    userLon = posicion.coords.longitude;
-
+                    userLat = posicion.coords.latitude; userLon = posicion.coords.longitude;
                     const latLngHotel = L.latLng(hotelLat, hotelLon);
                     const latLngUsuario = L.latLng(userLat, userLon);
                     const distanciaKm = (latLngUsuario.distanceTo(latLngHotel) / 1000).toFixed(1);
 
-                    distanciaText.innerHTML = `<i class="bi bi-geo-alt-fill me-1"></i> A ${distanciaKm} km (Ver ruta)`;
+                    distanciaText.innerHTML = `<i class="bi bi-geo-alt-fill me-1"></i> A ${distanciaKm} km de ti (Ver ruta)`;
                     btnRuta.classList.replace('btn-outline-warning', 'btn-warning');
-                    btnRuta.classList.add('text-dark', 'fw-bold');
-
+                    btnRuta.classList.add('text-dark');
                     rutaInfoModal.innerHTML = `Distancia en línea recta: <span class="text-warning">${distanciaKm} km</span>`;
 
                     const gmapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLon}&destination=${hotelLat},${hotelLon}&travelmode=driving`;
                     btnGoogleMaps.setAttribute('href', gmapsUrl);
                 },
                 function(error) {
-                    console.warn("Geolocalización denegada o fallida.", error);
-                    btnRuta.classList.add('d-none');
+                    distanciaText.innerHTML = `<i class="bi bi-geo-alt-fill me-1"></i> Activa tu GPS para ver la distancia`;
+                    btnRuta.classList.replace('btn-outline-warning', 'btn-outline-secondary');
+                    btnRuta.disabled = true;
                 }
             );
+        } else {
+            btnRuta.classList.add('d-none');
         }
 
         if (modalRutaElement) {
             modalRutaElement.addEventListener('shown.bs.modal', function () {
                 if (userLat && userLon && !mapaRutaInicializado) {
-
                     miMapaRuta = L.map('mapaRuta');
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '© OpenStreetMap'
-                    }).addTo(miMapaRuta);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OSM' }).addTo(miMapaRuta);
+                    L.marker([userLat, userLon]).addTo(miMapaRuta).bindPopup("<b>📍 Tu ubicación</b>").openPopup();
+                    L.marker([hotelLat, hotelLon]).addTo(miMapaRuta).bindPopup(`<b>🏕️ ${hotelNombre}</b>`);
 
-                    const pinUsuario = L.marker([userLat, userLon]).addTo(miMapaRuta).bindPopup("<b>📍 Tu ubicación actual</b>").openPopup();
-                    const pinHotel = L.marker([hotelLat, hotelLon]).addTo(miMapaRuta).bindPopup(`<b>🏕️ ${hotelNombre}</b>`);
-
-                    const puntosRuta = [
+                    const puntos = [
                         [userLat, userLon],
                         [hotelLat, hotelLon]
                     ];
 
-                    const lineaRuta = L.polyline(puntosRuta, {
-                        color: '#d84315',
-                        weight: 4,
-                        dashArray: '10, 10' // Línea punteada
-                    }).addTo(miMapaRuta);
-
+                    const lineaRuta = L.polyline(puntos, { color: '#d84315', weight: 4, dashArray: '10, 10' }).addTo(miMapaRuta);
                     miMapaRuta.fitBounds(lineaRuta.getBounds(), { padding: [50, 50] });
-
                     mapaRutaInicializado = true;
-                } else if (miMapaRuta) {
-                    miMapaRuta.invalidateSize();
-                }
+                } else if (miMapaRuta) { miMapaRuta.invalidateSize(); }
             });
         }
+
+        const rutasLoading = document.getElementById('rutas-loading');
+        const rutasContenedor = document.getElementById('rutas-contenedor');
+        const sliderDistancia = document.getElementById('filtro-distancia');
+        const valorDistancia = document.getElementById('valor-distancia');
+
+        let todasLasRutas = [];
+
+        if (hotelLat != null && hotelLon != null) {
+            const latLngHotel = L.latLng(hotelLat, hotelLon);
+
+            fetch('/api/rutas')
+                .then(response => response.json())
+                .then(rutas => {
+                    rutas.forEach(ruta => {
+                        const latLngRuta = L.latLng(ruta.latitud, ruta.longitud);
+                        ruta.distanciaAlHotel = latLngHotel.distanceTo(latLngRuta) / 1000;
+                    });
+
+                    todasLasRutas = rutas.sort((a, b) => a.distanciaAlHotel - b.distanciaAlHotel);
+
+                    setTimeout(() => {
+                        rutasLoading.classList.add('d-none');
+                        rutasContenedor.classList.remove('d-none');
+                        renderizarRutas(sliderDistancia.value);
+                    }, 500);
+                })
+                .catch(error => {
+                    console.error("Error al cargar rutas:", error);
+                    rutasLoading.innerHTML = `<div class="alert alert-danger w-100 text-center"><i class="bi bi-bug me-2"></i>Error al cargar las rutas</div>`;
+                });
+
+            sliderDistancia.addEventListener('input', (e) => {
+                const maxKm = e.target.value;
+                valorDistancia.textContent = maxKm + ' km';
+                renderizarRutas(maxKm);
+            });
+
+            function renderizarRutas(maxKm) {
+                rutasContenedor.innerHTML = ''; // Vaciamos contenedor
+
+                const filtradas = todasLasRutas.filter(r => r.distanciaAlHotel <= parseFloat(maxKm));
+
+                if (filtradas.length === 0) {
+                    rutasContenedor.innerHTML = `
+                        <div class="col-12 text-center text-muted py-5">
+                            <i class="bi bi-map display-4 d-block mb-3 opacity-50"></i>
+                            <p class="mb-0">No hay rutas registradas a menos de ${maxKm} km de este refugio.</p>
+                        </div>`;
+                    return;
+                }
+
+                filtradas.forEach(ruta => {
+                    const distanciaFormat = ruta.distanciaAlHotel.toFixed(1);
+                    const cardHTML = `
+                        <div class="col-12">
+                            <a href="/rutas/${ruta.id}" class="text-decoration-none">
+                                <div class="card bg-dark border-secondary h-100 shadow-sm hover-ruta">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="card-title text-light fw-bold mb-0">${ruta.nombre}</h6>
+                                            <span class="badge bg-${ruta.color} text-uppercase" style="font-size: 0.65rem;">${ruta.dificultad}</span>
+                                        </div>
+                                        <p class="text-muted small mb-3"><i class="bi bi-geo-alt text-danger me-1"></i> A ${distanciaFormat} km de aquí</p>
+                                        <div class="d-flex justify-content-between text-light small border-top border-secondary pt-2">
+                                            <span title="Distancia total"><i class="bi bi-arrow-left-right text-warning me-1"></i> ${ruta.distanciaKm} km</span>
+                                            <span title="Desnivel positivo"><i class="bi bi-graph-up-arrow text-warning me-1"></i> ${ruta.desnivelM} m</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    `;
+                    rutasContenedor.innerHTML += cardHTML;
+                });
+            }
+
+        } else {
+            rutasLoading.classList.add('d-none');
+        }
     });
+
+    // Validar form
+    function validarFechas() {
+        const inputEntrada = document.getElementById('fechaEntrada');
+        const inputSalida = document.getElementById('fechaSalida');
+        const errorAlertBox = document.getElementById('js-error-alert');
+        const errorText = document.getElementById('js-error-text');
+
+        if (!inputEntrada.value || !inputSalida.value) {
+            errorText.textContent = "Por favor, selecciona un rango de fechas completo.";
+            errorAlertBox.classList.remove('d-none'); return false;
+        }
+        errorAlertBox.classList.add('d-none'); return true;
+    }
 </script>
 </body>
 </html>

@@ -2,10 +2,7 @@ package org.example.turismoapp.data;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.turismoapp.model.*;
-import org.example.turismoapp.repository.ClienteRepository;
-import org.example.turismoapp.repository.HotelRepository;
-import org.example.turismoapp.repository.ReservaRepository;
-import org.example.turismoapp.repository.UserRepository;
+import org.example.turismoapp.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,13 +21,13 @@ public class DataSeeder implements CommandLineRunner {
     private final HotelRepository hotelRepository;
     private final UserRepository userRepository;
     private final ClienteRepository clienteRepository;
-    private final ReservaRepository reservaRepository;
+    private final RutaRepository rutaRepository;
 
-    public DataSeeder(HotelRepository hotelRepository, UserRepository userRepository, ClienteRepository clienteRepository, ReservaRepository reservaRepository) {
+    public DataSeeder(HotelRepository hotelRepository, UserRepository userRepository, ClienteRepository clienteRepository, ReservaRepository reservaRepository, RutaRepository rutaRepository) {
         this.hotelRepository = hotelRepository;
         this.userRepository = userRepository;
         this.clienteRepository = clienteRepository;
-        this.reservaRepository = reservaRepository;
+        this.rutaRepository = rutaRepository;
     }
 
     @Override
@@ -53,6 +50,7 @@ public class DataSeeder implements CommandLineRunner {
         }
         crearUsuariosLogin();
         crearImagenes();
+        crearRutas();
     }
 
 
@@ -220,10 +218,8 @@ public class DataSeeder implements CommandLineRunner {
     private void agregarImagenesHotel(String nombreHotel, String carpeta, String prefijo, String altTextBase, int numFotos) {
         Hotel hotel = hotelRepository.findByNombre(nombreHotel).orElse(null);
 
-        // Solo añadimos si el hotel existe y NO tiene imágenes todavía
         if (hotel != null && hotel.getImagenes().isEmpty()) {
 
-            // Bucle mágico: solo iteramos las veces que le hayamos indicado
             for (int i = 1; i <= numFotos; i++) {
                 HotelImagen img = HotelImagen.builder()
                         .url("/images/" + carpeta + "/" + prefijo + "_" + i + ".jpg")
@@ -236,6 +232,96 @@ public class DataSeeder implements CommandLineRunner {
 
             hotelRepository.save(hotel);
             log.info("📸 {} imágenes cargadas para: {}", numFotos, nombreHotel);
+        }
+    }
+
+    private void crearRutas() {
+        if (rutaRepository.count() == 0) {
+            System.out.println("Cargando rutas de senderismo en la base de datos...");
+
+            List<Ruta> listaRutas = List.of(
+                    new Ruta("Cola de Caballo (Ordesa)", "Moderada", 17.5, 450, 42.6416, -0.0566, "warning",
+                            "Impresionante recorrido por el fondo del Valle de Ordesa hasta la famosa cascada. Disfruta de un paisaje protegido lleno de bosques, cascadas y paredes verticales.",
+                            List.of("https://picsum.photos/seed/cola1/800/600", "https://picsum.photos/seed/cola2/800/600")),
+
+                    new Ruta("Ascenso al Aneto", "Extrema", 14.5, 1500, 42.6788, 0.6558, "danger",
+                            "Ruta mítica al techo de los Pirineos. Atraviesa el glaciar más grande de la cordillera y corona la cima tras superar el famoso y expuesto Paso de Mahoma.",
+                            List.of("https://picsum.photos/seed/aneto1/800/600", "https://picsum.photos/seed/aneto2/800/600")),
+
+                    new Ruta("Ruta de las Pasarelas del Vero", "Fácil", 3.2, 150, 42.1741, 0.0264, "success",
+                            "Agradable paseo apto para familias por pasarelas suspendidas sobre el río Vero, descubriendo el cañón calcáreo y la hermosa villa medieval de Alquézar.",
+                            List.of("https://picsum.photos/seed/vero1/800/600", "https://picsum.photos/seed/vero2/800/600")),
+
+                    new Ruta("Ibón de Plan (Basa de la Mora)", "Moderada", 4.5, 300, 42.5486, 0.3168, "warning",
+                            "Excursión a uno de los lagos glaciares más hermosos y mágicos del Pirineo, rodeado de praderas verdes, pino negro y altivas cumbres rocosas.",
+                            List.of("https://picsum.photos/seed/plan1/800/600", "https://picsum.photos/seed/plan2/800/600")),
+
+                    new Ruta("3 Ibones de Batisielles", "Difícil", 12.0, 750, 42.6669, 0.5055, "danger",
+                            "Ruta exigente pero inmensamente gratificante que enlaza tres impresionantes ibones glaciares en el corazón del Parque Natural Posets-Maladeta.",
+                            List.of("https://picsum.photos/seed/bati1/800/600", "https://picsum.photos/seed/bati2/800/600")),
+
+                    new Ruta("Monte Perdido desde Pradera de Ordesa", "Extrema", 21.0, 1700, 42.6743, 0.0345, "danger",
+                            "Dura ascensión a una de las cumbres más emblemáticas, pasando por las Gradas de Soaso y la mítica y peligrosa Escupidera antes de la cima.",
+                            List.of("https://picsum.photos/seed/perdido1/800/600", "https://picsum.photos/seed/perdido2/800/600")),
+
+                    new Ruta("Lagos de Ayous", "Moderada", 14.0, 800, 42.8655, -0.4382, "warning",
+                            "Magnífica ruta circular en la vertiente francesa del Parque Nacional de los Pirineos, ofreciendo el mejor mirador posible del imponente Pic du Midi d'Ossau.",
+                            List.of("https://picsum.photos/seed/ayous1/800/600", "https://picsum.photos/seed/ayous2/800/600")),
+
+                    new Ruta("Circo de Gavarnie", "Fácil", 8.0, 200, 42.7361, -0.0104, "success",
+                            "Paseo accesible hacia el espectacular anfiteatro rocoso declarado Patrimonio de la Humanidad, rematado por una de las cascadas más altas de Europa.",
+                            List.of("https://picsum.photos/seed/gavarnie1/800/600", "https://picsum.photos/seed/gavarnie2/800/600")),
+
+                    new Ruta("Pic du Midi d’Ossau (vuelta completa)", "Difícil", 17.0, 900, 42.8353, -0.4325, "danger",
+                            "Vuelta completa a esta icónica y fotogénica montaña de origen volcánico, recorriendo diversos refugios, collados y paisajes pastoriles.",
+                            List.of("https://picsum.photos/seed/midi1/800/600", "https://picsum.photos/seed/midi2/800/600")),
+
+                    new Ruta("Ruta al Balneario de Panticosa – Ibones Azules", "Moderada", 11.5, 700, 42.7609, -0.2336, "warning",
+                            "Clásica ascensión desde el histórico Balneario de Panticosa, subiendo por marmiteras de granito hasta alcanzar estos espectaculares ibones de alta montaña.",
+                            List.of("https://picsum.photos/seed/panti1/800/600", "https://picsum.photos/seed/panti2/800/600")),
+
+                    new Ruta("Refugio de Góriz desde Ordesa", "Difícil", 18.0, 900, 42.6634, 0.0340, "danger",
+                            "Ruta de aproximación al refugio más pernoctado de España, puerta de entrada a las grandes cumbres calcáreas y punto clave de travesías como la Senda Pirenaica (GR11).",
+                            List.of("https://picsum.photos/seed/goriz1/800/600", "https://picsum.photos/seed/goriz2/800/600")),
+
+                    new Ruta("Estany de Sant Maurici – Cascada de Ratera", "Fácil", 6.5, 250, 42.5876, 1.0032, "success",
+                            "Agradable ruta en el corazón del Parque Nacional de Aigüestortes. Disfruta de la icónica vista de Els Encantats reflejados en el lago y la atronadora cascada.",
+                            List.of("https://picsum.photos/seed/maurici1/800/600", "https://picsum.photos/seed/maurici2/800/600")),
+
+                    new Ruta("Carros de Foc (tramo corto)", "Difícil", 15.0, 1000, 42.6030, 0.9370, "danger",
+                            "Tramo de alta dureza y extremada belleza de la mítica travesía que une los refugios de Aigüestortes a través de collados a más de 2400 metros de altitud.",
+                            List.of("https://picsum.photos/seed/carros1/800/600", "https://picsum.photos/seed/carros2/800/600")),
+
+                    new Ruta("Lago de Certascan", "Moderada", 9.5, 600, 42.6630, 1.2595, "warning",
+                            "Ascensión inmersiva en la naturaleza virgen hacia el lago natural a mayor altitud y de mayores dimensiones de todo el Pirineo catalán.",
+                            List.of("https://picsum.photos/seed/certa1/800/600", "https://picsum.photos/seed/certa2/800/600")),
+
+                    new Ruta("Pico Posets desde Ángel Orús", "Extrema", 19.0, 1350, 42.6548, 0.4042, "danger",
+                            "Exigente ascensión al segundo pico más alto de la cordillera, dominando visualmente el salvaje valle de Benasque y su sobrecogedora cresta de las Espadas.",
+                            List.of("https://picsum.photos/seed/posets1/800/600", "https://picsum.photos/seed/posets2/800/600")),
+
+                    new Ruta("Faja de Pelay (Ordesa)", "Difícil", 21.5, 1000, 42.6428, -0.0375, "danger",
+                            "Espectacular y vertiginoso sendero colgado por lo alto de las paredes sur del valle de Ordesa, ofreciendo una perspectiva de pájaro inigualable del parque.",
+                            List.of("https://picsum.photos/seed/pelay1/800/600", "https://picsum.photos/seed/pelay2/800/600")),
+
+                    new Ruta("Selva de Irati – Embalse de Irabia", "Fácil", 7.0, 150, 42.9834, -1.1795, "success",
+                            "Caminata tranquila y sombreada bordeando el embalse en el segundo hayedo-abetal más extenso y mejor conservado de Europa, especialmente mágico en otoño.",
+                            List.of("https://picsum.photos/seed/irati1/800/600", "https://picsum.photos/seed/irati2/800/600")),
+
+                    new Ruta("Pico Midi d’Ossau (ascenso clásico)", "Extrema", 10.0, 1200, 42.8353, -0.4325, "danger",
+                            "Ruta altamente técnica. Escalar este antiguo volcán requiere trepadas de grado II/III y destreza en rapel, reservada exclusivamente para expertos.",
+                            List.of("https://picsum.photos/seed/midiasc1/800/600", "https://picsum.photos/seed/midiasc2/800/600")),
+
+                    new Ruta("Camino al Ibón de Piedrafita", "Moderada", 9.0, 500, 42.7354, -0.2952, "warning",
+                            "Ruta sencilla, muy frecuentada e ideal para iniciarse en la montaña a los pies de la imponente Peña Telera, transcurriendo entre pastos y bosques.",
+                            List.of("https://picsum.photos/seed/piedra1/800/600", "https://picsum.photos/seed/piedra2/800/600")),
+
+                    new Ruta("Valle de Benasque – Forau de Aigualluts", "Fácil", 5.5, 200, 42.6901, 0.6410, "success",
+                            "Excursión imprescindible y mágica. Contempla cómo las aguas de los glaciares desaparecen en un inmenso sumidero kárstico frente a la majestuosa vista del Aneto.",
+                            List.of("https://picsum.photos/seed/aigu1/800/600", "https://picsum.photos/seed/aigu2/800/600"))
+            );
+
+            rutaRepository.saveAll(listaRutas);
         }
     }
 }
