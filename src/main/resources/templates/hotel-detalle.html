@@ -21,10 +21,52 @@
         <div class="row g-0">
 
             <div class="col-md-6 position-relative">
-                <img th:src="@{'https://picsum.photos/seed/' + ${hotel.id} + '/800/600'}"
-                     class="img-fluid w-100 h-100" alt="Foto del refugio" style="object-fit: cover; min-height: 400px;">
 
-                <div sec:authorize="isAuthenticated()" class="position-absolute top-0 end-0 m-3">
+                <div id="carruselHotel" class="carousel slide h-100" data-bs-ride="carousel">
+
+                    <div class="carousel-indicators" th:if="${hotel.imagenes != null and !hotel.imagenes.isEmpty()}">
+                        <button th:each="img, iterStat : ${hotel.imagenes}"
+                                type="button"
+                                data-bs-target="#carruselHotel"
+                                th:data-bs-slide-to="${iterStat.index}"
+                                th:classappend="${iterStat.first} ? 'active' : ''"
+                                th:aria-current="${iterStat.first} ? 'true' : 'false'"
+                                th:aria-label="'Slide ' + ${iterStat.count}">
+                        </button>
+                    </div>
+
+                    <div class="carousel-inner h-100">
+
+                        <th:block th:if="${hotel.imagenes != null and !hotel.imagenes.isEmpty()}">
+                            <div th:each="img, iterStat : ${hotel.imagenes}"
+                                 class="carousel-item h-100"
+                                 th:classappend="${iterStat.first} ? 'active' : ''">
+                                <img th:src="${img}" class="d-block w-100" alt="Foto del refugio" style="height: 500px; object-fit: cover;">
+                            </div>
+                        </th:block>
+
+                        <th:block th:if="${hotel.imagenes == null or hotel.imagenes.isEmpty()}">
+                            <div class="carousel-item active h-100">
+                                <img th:src="@{'https://picsum.photos/seed/' + ${hotel.id} + '/800/600'}"
+                                     class="d-block w-100" alt="Foto por defecto" style="height: 500px; object-fit: cover;">
+                            </div>
+                        </th:block>
+
+                    </div>
+
+                    <th:block th:if="${hotel.imagenes != null and hotel.imagenes.size() > 1}">
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carruselHotel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Anterior</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carruselHotel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Siguiente</span>
+                        </button>
+                    </th:block>
+                </div>
+
+                <div sec:authorize="isAuthenticated()" class="position-absolute top-0 end-0 m-3" style="z-index: 10;">
                     <form th:action="@{/favoritos/toggle}" method="post">
                         <input type="hidden" name="hotelId" th:value="${hotel.id}">
                         <input type="hidden" name="redirectUrl" th:value="'/hoteles/' + ${hotel.id}">
@@ -34,6 +76,7 @@
                         </button>
                     </form>
                 </div>
+
             </div>
 
             <div class="col-md-6 d-flex flex-column">

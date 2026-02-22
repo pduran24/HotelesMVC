@@ -1,6 +1,7 @@
 package org.example.turismoapp.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * DTO para devolver la información de un hotel.
@@ -18,6 +19,7 @@ public record HotelResponse(
         String ubicacion,
         String descripcion,
         Integer estrellas,
-        BigDecimal precioNoche
+        BigDecimal precioNoche,
+        List<String> imagenes
 ) {
 }

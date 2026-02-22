@@ -5,6 +5,7 @@ import org.example.turismoapp.dto.HotelRequest;
 import org.example.turismoapp.dto.HotelResponse;
 import org.example.turismoapp.exception.HotelNotFoundException;
 import org.example.turismoapp.model.Hotel;
+import org.example.turismoapp.model.HotelImagen;
 import org.example.turismoapp.repository.HotelRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,13 +112,17 @@ public class HotelService {
      * @return El objeto HotelResponse resultante.
      */
     private HotelResponse mapToResponse(Hotel hotel) {
+        List<String> urlsImagenes = hotel.getImagenes().stream()
+                .map(HotelImagen::getUrl)
+                .toList();
         return new HotelResponse(
                 hotel.getId(),
                 hotel.getNombre(),
                 hotel.getUbicacion(),
                 hotel.getDescripcion(),
                 hotel.getEstrellas(),
-                hotel.getPrecioNoche()
+                hotel.getPrecioNoche(),
+                urlsImagenes
         );
     }
 }

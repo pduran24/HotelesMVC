@@ -13,17 +13,57 @@
 
         <div class="col" th:each="hotel : ${listaHoteles}">
 
-            <div class="card h-100 card-hotel">
-                <div class="position-relative">
-                    <img th:src="@{'https://picsum.photos/seed/' + ${hotel.id} + '/600/400'}"
-                         class="card-img-top" alt="Foto del refugio" style="height: 200px; object-fit: cover;">
+            <div class="card h-100 card-hotel overflow-hidden">
 
-                    <div sec:authorize="isAuthenticated()" class="position-absolute top-0 end-0 m-2">
+                <div class="position-relative">
+
+                    <div th:id="'carrusel-' + ${hotel.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+
+                        <div class="carousel-indicators" th:if="${hotel.imagenes != null and !hotel.imagenes.isEmpty()}">
+                            <button th:each="img, iterStat : ${hotel.imagenes}"
+                                    type="button"
+                                    th:data-bs-target="'#carrusel-' + ${hotel.id}"
+                                    th:data-bs-slide-to="${iterStat.index}"
+                                    th:classappend="${iterStat.first} ? 'active' : ''"
+                                    th:aria-current="${iterStat.first} ? 'true' : 'false'">
+                            </button>
+                        </div>
+
+                        <div class="carousel-inner">
+                            <th:block th:if="${hotel.imagenes != null and !hotel.imagenes.isEmpty()}">
+                                <div th:each="img, iterStat : ${hotel.imagenes}"
+                                     class="carousel-item"
+                                     th:classappend="${iterStat.first} ? 'active' : ''">
+                                    <img th:src="${img}" class="card-img-top d-block w-100" alt="Foto del refugio" style="height: 200px; object-fit: cover;">
+                                </div>
+                            </th:block>
+
+                            <th:block th:if="${hotel.imagenes == null or hotel.imagenes.isEmpty()}">
+                                <div class="carousel-item active">
+                                    <img th:src="@{'https://picsum.photos/seed/' + ${hotel.id} + '/600/400'}"
+                                         class="card-img-top d-block w-100" alt="Foto por defecto" style="height: 200px; object-fit: cover;">
+                                </div>
+                            </th:block>
+                        </div>
+
+                        <th:block th:if="${hotel.imagenes != null and hotel.imagenes.size() > 1}">
+                            <button class="carousel-control-prev" type="button" th:data-bs-target="'#carrusel-' + ${hotel.id}" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Anterior</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" th:data-bs-target="'#carrusel-' + ${hotel.id}" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Siguiente</span>
+                            </button>
+                        </th:block>
+                    </div>
+                    <div sec:authorize="isAuthenticated()" class="position-absolute top-0 end-0 m-2" style="z-index: 10;">
                         <form th:action="@{/favoritos/toggle}" method="post">
                             <input type="hidden" name="hotelId" th:value="${hotel.id}">
-                            <input type="hidden" name="redirectUrl" value="/hoteles"> <button type="submit" class="btn btn-light rounded-circle text-danger shadow p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                            <i class="bi" th:classappend="${favoritosIds != null && favoritosIds.contains(hotel.id)} ? 'bi-heart-fill' : 'bi-heart'"></i>
-                        </button>
+                            <input type="hidden" name="redirectUrl" value="/hoteles">
+                            <button type="submit" class="btn btn-light rounded-circle text-danger shadow p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <i class="bi" th:classappend="${favoritosIds != null && favoritosIds.contains(hotel.id)} ? 'bi-heart-fill' : 'bi-heart'"></i>
+                            </button>
                         </form>
                     </div>
                 </div>
