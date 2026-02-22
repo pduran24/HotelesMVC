@@ -8,6 +8,10 @@ package org.example.turismoapp.dto;
  */
 public record ClienteResponse(
         Long id,
-        String nombre
+        String nombre,
+        String email,
+        String avatarUrl,
+        String biografia,
+        String telefono
 ) {
 }
