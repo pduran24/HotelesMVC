@@ -9,7 +9,10 @@
 <div class="container pb-5">
 
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
-        <h2 class="mb-0 fw-bold" style="color: var(--madera-clara);">Refugios y Alojamientos</h2>
+        <div>
+            <h2 class="mb-0 fw-bold" style="color: var(--madera-clara);">Refugios y Alojamientos</h2>
+            <p class="text-muted mb-0 mt-1">Filtra por ubicación, comodidades y presupuesto.</p>
+        </div>
 
         <div class="btn-group shadow-sm" role="group">
             <button type="button" class="btn btn-rustico active" id="btn-lista">
@@ -21,73 +24,144 @@
         </div>
     </div>
 
-    <div id="vista-lista">
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            <div class="col" th:each="hotel : ${listaHoteles}">
-                <div class="card h-100 card-hotel overflow-hidden">
-                    <div class="position-relative">
-                        <div th:id="'carrusel-' + ${hotel.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
-                            <div class="carousel-indicators" th:if="${hotel.imagenes != null and !hotel.imagenes.isEmpty()}">
-                                <button th:each="img, iterStat : ${hotel.imagenes}" type="button" th:data-bs-target="'#carrusel-' + ${hotel.id}" th:data-bs-slide-to="${iterStat.index}" th:classappend="${iterStat.first} ? 'active' : ''" th:aria-current="${iterStat.first} ? 'true' : 'false'"></button>
+    <div class="row g-4">
+
+        <div class="col-lg-3">
+            <div class="card bg-dark border-secondary shadow-sm sticky-top" style="top: 20px; border-radius: 12px;">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold text-white mb-4"><i class="bi bi-funnel-fill text-warning me-2"></i>Filtros</h5>
+
+                    <form th:action="@{/hoteles}" method="get">
+
+                        <div class="mb-4">
+                            <label class="form-label text-muted small fw-bold">UBICACIÓN / VALLE</label>
+                            <input type="text" class="form-control bg-transparent text-white border-secondary" name="ubicacion" th:value="${ubicacionFiltro}" placeholder="Ej: Ordesa, Benasque...">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-muted small fw-bold">PRECIO POR NOCHE (€)</label>
+                            <div class="d-flex gap-2 align-items-center">
+                                <input type="number" class="form-control bg-transparent text-white border-secondary" name="precioMin" th:value="${precioMinFiltro}" placeholder="Mín" min="0">
+                                <span class="text-muted">-</span>
+                                <input type="number" class="form-control bg-transparent text-white border-secondary" name="precioMax" th:value="${precioMaxFiltro}" placeholder="Máx" min="0">
                             </div>
-                            <div class="carousel-inner">
-                                <th:block th:if="${hotel.imagenes != null and !hotel.imagenes.isEmpty()}">
-                                    <div th:each="img, iterStat : ${hotel.imagenes}" class="carousel-item" th:classappend="${iterStat.first} ? 'active' : ''">
-                                        <img th:src="${img}" class="card-img-top d-block w-100" alt="Foto del refugio" style="height: 200px; object-fit: cover;">
-                                    </div>
-                                </th:block>
-                                <th:block th:if="${hotel.imagenes == null or hotel.imagenes.isEmpty()}">
-                                    <div class="carousel-item active">
-                                        <img th:src="@{'https://picsum.photos/seed/' + ${hotel.id} + '/600/400'}" class="card-img-top d-block w-100" alt="Foto por defecto" style="height: 200px; object-fit: cover;">
-                                    </div>
-                                </th:block>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-muted small fw-bold">ESTRELLAS MÍNIMAS</label>
+                            <select class="form-select bg-transparent text-white border-secondary" name="estrellas">
+                                <option value="" th:selected="${estrellasFiltro == null}">Cualquiera</option>
+                                <option value="5" th:selected="${estrellasFiltro == 5}">⭐⭐⭐⭐⭐ (5)</option>
+                                <option value="4" th:selected="${estrellasFiltro == 4}">⭐⭐⭐⭐ (4 o más)</option>
+                                <option value="3" th:selected="${estrellasFiltro == 3}">⭐⭐⭐ (3 o más)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4 border-top border-secondary pt-3">
+                            <label class="form-label text-muted small fw-bold mb-3">COMODIDADES</label>
+
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" role="switch" id="mascotas" name="admiteMascotas" value="true" th:checked="${mascotasFiltro}">
+                                <label class="form-check-label text-light" for="mascotas">🐶 Pet Friendly</label>                            </div>
+
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="spa" name="tieneSpa" value="true" th:checked="${spaFiltro}">
+                                <label class="form-check-label text-light" for="spa">🌊 Zona de Aguas / Spa</label>
                             </div>
-                            <th:block th:if="${hotel.imagenes != null and hotel.imagenes.size() > 1}">
-                                <button class="carousel-control-prev" type="button" th:data-bs-target="'#carrusel-' + ${hotel.id}" data-bs-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="visually-hidden">Anterior</span></button>
-                                <button class="carousel-control-next" type="button" th:data-bs-target="'#carrusel-' + ${hotel.id}" data-bs-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span><span class="visually-hidden">Siguiente</span></button>
-                            </th:block>
                         </div>
 
-                        <div sec:authorize="isAuthenticated()" class="position-absolute top-0 end-0 m-2" style="z-index: 10;">
-                            <form th:action="@{/favoritos/toggle}" method="post">
-                                <input type="hidden" name="hotelId" th:value="${hotel.id}">
-                                <input type="hidden" name="redirectUrl" value="/hoteles">
-                                <button type="submit" class="btn btn-light rounded-circle text-danger shadow p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                    <i class="bi" th:classappend="${favoritosIds != null && favoritosIds.contains(hotel.id)} ? 'bi-heart-fill' : 'bi-heart'"></i>
-                                </button>
-                            </form>
+                        <div class="d-grid gap-2 mt-5">
+                            <button type="submit" class="btn btn-rustico fw-bold">Aplicar Filtros</button>
+                            <a th:href="@{/hoteles}" class="btn btn-outline-secondary">Limpiar</a>
                         </div>
-                    </div>
-
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h5 class="card-title fw-bold text-light" th:text="${hotel.nombre}">Nombre Hotel</h5>
-                            <span class="badge precio-badge" th:text="${hotel.precioNoche} + ' €'">100 €</span>
-                        </div>
-                        <p class="text-muted small mb-2">
-                            📍 <span th:text="${hotel.ubicacion}">Ubicación</span> | ⭐ <span th:text="${hotel.estrellas}">4</span> Estrellas
-                        </p>
-                        <p class="card-text text-light" th:text="${hotel.descripcion}" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">Descripción...</p>
-                    </div>
-
-                    <div class="card-footer bg-transparent border-top-0 pb-3 text-center">
-                        <a th:href="@{/hoteles/{id}(id=${hotel.id})}" class="btn btn-rustico w-100">Ver Refugio</a>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
 
-        <div th:if="${#lists.isEmpty(listaHoteles)}" class="alert alert-warning text-center mt-4" style="background-color: var(--tarjeta-oscura); color: var(--madera-clara); border: 1px solid var(--madera-clara);">
-            No hay refugios disponibles en este momento.
-        </div>
-    </div>
+        <div class="col-lg-9">
 
-    <div id="vista-mapa" class="d-none">
-        <div class="card border-0 shadow-lg p-2" style="background-color: var(--tarjeta-oscura); border-radius: 16px;">
-            <div id="mapaHoteles" style="height: 70vh; min-height: 600px; width: 100%; border-radius: 12px; z-index: 1;"></div>
-        </div>
-    </div>
+            <div id="vista-lista">
 
+                <div th:if="${#lists.isEmpty(listaHoteles)}" class="alert alert-warning text-center mt-2" style="background-color: var(--tarjeta-oscura); color: var(--madera-clara); border: 1px solid var(--madera-clara);">
+                    <i class="bi bi-search display-4 d-block mb-3 opacity-50"></i>
+                    No hay refugios disponibles con esos filtros.
+                </div>
+
+                <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+                    <div class="col" th:each="hotel : ${listaHoteles}">
+                        <div class="card h-100 card-hotel overflow-hidden border-secondary">
+                            <div class="position-relative">
+                                <div th:id="'carrusel-' + ${hotel.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+                                    <div class="carousel-indicators" th:if="${hotel.imagenes != null and !hotel.imagenes.isEmpty()}">
+                                        <button th:each="img, iterStat : ${hotel.imagenes}" type="button" th:data-bs-target="'#carrusel-' + ${hotel.id}" th:data-bs-slide-to="${iterStat.index}" th:classappend="${iterStat.first} ? 'active' : ''" th:aria-current="${iterStat.first} ? 'true' : 'false'"></button>
+                                    </div>
+                                    <div class="carousel-inner">
+                                        <th:block th:if="${hotel.imagenes != null and !hotel.imagenes.isEmpty()}">
+                                            <div th:each="img, iterStat : ${hotel.imagenes}" class="carousel-item" th:classappend="${iterStat.first} ? 'active' : ''">
+                                                <img th:src="${img}" class="card-img-top d-block w-100" alt="Foto del refugio" style="height: 200px; object-fit: cover;">
+                                            </div>
+                                        </th:block>
+                                        <th:block th:if="${hotel.imagenes == null or hotel.imagenes.isEmpty()}">
+                                            <div class="carousel-item active">
+                                                <img th:src="@{'https://picsum.photos/seed/' + ${hotel.id} + '/600/400'}" class="card-img-top d-block w-100" alt="Foto por defecto" style="height: 200px; object-fit: cover;">
+                                            </div>
+                                        </th:block>
+                                    </div>
+                                    <th:block th:if="${hotel.imagenes != null and hotel.imagenes.size() > 1}">
+                                        <button class="carousel-control-prev" type="button" th:data-bs-target="'#carrusel-' + ${hotel.id}" data-bs-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="visually-hidden">Anterior</span></button>
+                                        <button class="carousel-control-next" type="button" th:data-bs-target="'#carrusel-' + ${hotel.id}" data-bs-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span><span class="visually-hidden">Siguiente</span></button>
+                                    </th:block>
+                                </div>
+
+                                <div sec:authorize="isAuthenticated()" class="position-absolute top-0 end-0 m-2" style="z-index: 10;">
+                                    <form th:action="@{/favoritos/toggle}" method="post">
+                                        <input type="hidden" name="hotelId" th:value="${hotel.id}">
+                                        <input type="hidden" name="redirectUrl" value="/hoteles">
+                                        <button type="submit" class="btn btn-light rounded-circle text-danger shadow p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                            <i class="bi" th:classappend="${favoritosIds != null && favoritosIds.contains(hotel.id)} ? 'bi-heart-fill' : 'bi-heart'"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="card-body d-flex flex-column">
+
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title fw-bold text-light mb-0" th:text="${hotel.nombre}" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 48px;">
+                                        Nombre Hotel
+                                    </h5>
+                                    <span class="badge precio-badge ms-2 flex-shrink-0" th:text="${hotel.precioNoche} + ' €'">100 €</span>
+                                </div>
+
+                                <p class="text-muted small mb-2">
+                                    📍 <span th:text="${hotel.ubicacion}">Ubicación</span> | ⭐ <span th:text="${hotel.estrellas}">4</span> Estrellas
+                                </p>
+
+                                <div class="d-flex gap-2 mb-3" style="min-height: 24px;">
+                                    <span th:if="${hotel.admiteMascotas}" class="badge bg-secondary text-light border border-secondary" title="Pet Friendly">🐶 Mascotas</span>
+                                    <span th:if="${hotel.tieneSpa}" class="badge bg-secondary text-light border border-secondary" title="Tiene Spa">🌊 Spa</span>
+                                </div>
+
+                                <p class="card-text text-light mt-auto mb-0" th:text="${hotel.descripcion}" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">Descripción...</p>
+
+                            </div>
+
+                            <div class="card-footer bg-transparent border-top-0 pb-3 text-center">
+                                <a th:href="@{/hoteles/{id}(id=${hotel.id})}" class="btn btn-rustico w-100">Ver Refugio</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="vista-mapa" class="d-none">
+                <div class="card border-0 shadow-lg p-2" style="background-color: var(--tarjeta-oscura); border-radius: 16px;">
+                    <div id="mapaHoteles" style="height: 70vh; min-height: 600px; width: 100%; border-radius: 12px; z-index: 1;"></div>
+                </div>
+            </div>
+
+        </div> </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -99,13 +173,12 @@
         const vistaLista = document.getElementById('vista-lista');
         const vistaMapa = document.getElementById('vista-mapa');
 
-        // 1. INYECCIÓN DE DATOS: Thymeleaf convierte tu List<HotelResponse> en un Array JSON
+        // Los datos se inyectan a Leaflet desde la misma variable que pinta las tarjetas
         const hoteles = /*[[${listaHoteles}]]*/ [];
 
         let mapaInicializado = false;
         let miMapa = null;
 
-        // Coordenadas centrales del Pirineo
         const centroPirineos = [42.6333, 0.7833];
 
         btnMapa.addEventListener('click', function() {
@@ -118,30 +191,34 @@
             vistaMapa.classList.remove('d-none');
 
             if (!mapaInicializado) {
-                // Inicializar mapa
                 miMapa = L.map('mapaHoteles').setView(centroPirineos, 8);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; OpenStreetMap contributors'
                 }).addTo(miMapa);
 
-                // ==========================================
-                // 2. GENERACIÓN DINÁMICA DE PINES
-                // ==========================================
                 hoteles.forEach(hotel => {
                     if (hotel.latitud && hotel.longitud) {
-
                         const marker = L.marker([hotel.latitud, hotel.longitud]).addTo(miMapa);
 
                         const imagenUrl = (hotel.imagenes && hotel.imagenes.length > 0)
                             ? hotel.imagenes[0]
-                            : 'https://picsum.photos/seed/' + hotel.id + '/200/120";';
+                            : 'https://picsum.photos/seed/' + hotel.id + '/200/120';
 
                         const popupContent = `
-                            <div style="width: 200px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-                                <img src="${imagenUrl}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px; mb-2">
+                            <div style="width: 200px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;" xmlns="http://www.w3.org/1999/html">
+                                <img src="${imagenUrl}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;">
                                 <h6 style="margin: 8px 0 4px 0; font-weight: bold; color: #333;">${hotel.nombre}</h6>
-                                <p style="margin: 0; font-size: 0.85rem; color: #666;">⭐ ${hotel.estrellas} Estrellas</p>
+                                <p style="margin: 0; font-size: 0.85rem; color: #666;">
+                                  ⭐ ${hotel.estrellas} Estrellas
+                                  ${hotel.tieneSpa ? ' · 🌊 Spa' : ''}
+                                </p>
+
+                                ${hotel.admiteMascotas ? `
+                                  <p style="margin: 0; font-size: 0.85rem; color: #666;">
+                                    🐶 Mascotas
+                                  </p>
+                                ` : ''}
                                 <p style="margin: 4px 0 10px 0; font-weight: bold; color: #2e7d32;">${hotel.precioNoche} €/noche</p>
                                 <a href="/hoteles/${hotel.id}" class="btn btn-sm btn-rustico text-white w-100" style="font-size: 0.8rem; background-color: #d84315; border: none; padding: 5px; border-radius: 4px; display: block; text-align: center; text-decoration: none;">
                                     Ver Detalles

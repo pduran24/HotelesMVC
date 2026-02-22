@@ -24,5 +24,8 @@ public record HotelResponse(
         Double notaMedia,
         List<ResenaDTO> resenas,
         Double latitud,
-        Double longitud
+        Double longitud,
+        boolean admiteMascotas,
+        boolean tieneSpa,
+        boolean incluyeDesayuno
 ) {}

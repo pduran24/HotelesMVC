@@ -8,6 +8,8 @@ import org.example.turismoapp.exception.HotelNotFoundException;
 import org.example.turismoapp.model.Hotel;
 import org.example.turismoapp.model.HotelImagen;
 import org.example.turismoapp.repository.HotelRepository;
+import org.example.turismoapp.specification.HotelSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -94,6 +96,22 @@ public class HotelService {
     }
 
     /**
+     * Busca hoteles aplicando filtros avanzados dinámicos.
+     */
+    @Transactional(readOnly = true)
+    public List<HotelResponse> buscarConFiltros(String ubicacion, Double precioMin, Double precioMax,
+                                                Integer estrellas, Boolean admiteMascotas, Boolean tieneSpa) {
+
+        Specification<Hotel> spec = HotelSpecification.conFiltrosMultiples(
+                ubicacion, precioMin, precioMax, estrellas, admiteMascotas, tieneSpa
+        );
+
+        return hotelRepository.findAll(spec).stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    /**
      * Elimina un hotel del sistema.
      *
      * @param id El ID del hotel a eliminar.
@@ -144,7 +162,10 @@ public class HotelService {
                 Math.round(media * 10.0) / 10.0,
                 listaResenas,
                 hotel.getLatitud(),
-                hotel.getLongitud()
+                hotel.getLongitud(),
+                hotel.isAdmiteMascotas(),
+                hotel.isTieneSpa(),
+                hotel.isIncluyeDesayuno()
         );
     }
 }

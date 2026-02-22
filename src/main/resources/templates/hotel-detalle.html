@@ -26,10 +26,11 @@
             transform: translateY(-4px); border-color: var(--naranja-fuego) !important;
             box-shadow: 0 4px 15px rgba(216, 67, 21, 0.2) !important;
         }
-        /* Scrollbar personalizado para las rutas */
-        #rutas-contenedor::-webkit-scrollbar { width: 6px; }
-        #rutas-contenedor::-webkit-scrollbar-track { background: var(--fondo-oscuro); border-radius: 4px; }
-        #rutas-contenedor::-webkit-scrollbar-thumb { background: var(--madera-clara); border-radius: 4px; }
+
+        /* CORRECCIÓN: Scrollbar personalizado ahora por CLASE */
+        .scroll-rutas::-webkit-scrollbar { width: 6px; }
+        .scroll-rutas::-webkit-scrollbar-track { background: var(--fondo-oscuro); border-radius: 4px; }
+        .scroll-rutas::-webkit-scrollbar-thumb { background: var(--madera-clara); border-radius: 4px; }
     </style>
 </head>
 
@@ -110,60 +111,88 @@
 
         </div>
 
-        <div class="col-lg-5 d-flex flex-column gap-4">
+        <div class="col-lg-5">
+            <div class="d-flex flex-column gap-4 sticky-top h-100" style="top: 20px; max-height: calc(100vh - 40px);">
 
-            <div class="card card-detalle p-4" style="border-radius: 12px;">
-                <h2 class="fw-bold text-light mb-3 lh-1" th:text="${hotel.nombre}">Nombre Hotel</h2>
-                <div class="mb-4">
-                    <span class="badge precio-badge px-3 py-2 fs-5" th:text="${hotel.precioNoche} + ' €/noche'">100 €</span>
+                <div class="card card-detalle p-4 flex-shrink-0" style="border-radius: 12px;">
+                    <h2 class="fw-bold text-light mb-3 lh-1" th:text="${hotel.nombre}">Nombre Hotel</h2>
+
+                    <div class="mb-3">
+                        <span class="badge precio-badge px-3 py-2 fs-5" th:text="${hotel.precioNoche} + ' €/noche'">100 €</span>
+                    </div>
+
+                    <div class="d-flex gap-2 mb-3" th:if="${hotel.admiteMascotas or hotel.tieneSpa}">
+                        <span th:if="${hotel.admiteMascotas}" class="badge bg-secondary text-light border border-secondary px-2 py-1 fs-6 d-flex align-items-center" title="Pet Friendly">
+                            🐶 Mascotas
+                        </span>
+                        <span th:if="${hotel.tieneSpa}" class="badge bg-secondary text-light border border-secondary px-2 py-1 fs-6 d-flex align-items-center" title="Tiene Spa">
+                            🌊 Spa
+                        </span>
+                    </div>
+
+                    <p class="text-muted fs-5 mb-4">📍 <span th:text="${hotel.ubicacion}">Ubicación</span></p>
+
+                    <button id="btn-ruta" class="btn btn-outline-warning w-100 fw-bold p-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalRuta">
+                        <span id="distancia-text">
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Buscando tu ubicación...
+                        </span>
+                    </button>
                 </div>
 
-                <p class="text-muted fs-5 mb-3">📍 <span th:text="${hotel.ubicacion}">Ubicación</span></p>
+                <div class="card card-detalle p-4 d-flex flex-column flex-grow-1" style="border-radius: 12px; min-height: 0;">
 
-                <button id="btn-ruta" class="btn btn-outline-warning w-100 mb-4 fw-bold p-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalRuta">
-                    <span id="distancia-text">
-                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Buscando tu ubicación...
-                    </span>
-                </button>
-
-                <a th:if="${clima != null}" th:href="@{/hoteles/{id}/clima(id=${hotel.id})}" class="d-flex align-items-center bg-dark border border-secondary rounded-4 p-3 shadow-sm text-decoration-none widget-clima w-100" style="transition: all 0.2s ease;">
-                    <i class="bi fs-1 me-3" th:classappend="${clima.iconoCss}"></i>
-                    <div class="d-flex flex-column lh-1 border-end border-secondary pe-3 me-3">
-                        <span class="text-muted" style="font-size: 0.7rem; text-transform: uppercase;">Ahora</span>
-                        <span class="fw-bold text-white fs-3"><span th:text="${clima.temperatura}">5.0</span>°C</span>
-                    </div>
-                    <span class="text-light fw-medium" th:text="${clima.descripcion}">Despejado</span>
-                    <i class="bi bi-chevron-right text-muted ms-auto fs-4"></i>
-                </a>
-            </div>
-
-            <div class="card card-detalle p-4 flex-grow-1" style="border-radius: 12px;">
-
-                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
-                    <h5 class="fw-bold mb-0" style="color: var(--madera-clara);">
-                        <i class="bi bi-signpost-2-fill me-2 text-warning"></i>Rutas
-                    </h5>
-                    <div class="d-flex align-items-center gap-2">
-                        <input type="range" class="form-range" id="filtro-distancia" min="5" max="150" step="5" value="30" style="width: 100px;">
-                        <span id="valor-distancia" class="badge bg-secondary" style="width: 60px;">30 km</span>
-                    </div>
-                </div>
-
-                <div id="rutas-loading" class="row g-3">
-                    <div class="col-12" th:each="i : ${#numbers.sequence(1, 3)}">
-                        <div class="card bg-dark border-secondary p-3 placeholder-glow">
-                            <span class="placeholder col-8 bg-secondary mb-3 rounded"></span>
-                            <div class="d-flex justify-content-between">
-                                <span class="placeholder col-5 bg-secondary rounded"></span>
-                                <span class="placeholder col-4 bg-secondary rounded"></span>
-                            </div>
+                    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3 flex-shrink-0">
+                        <h5 class="fw-bold mb-0" style="color: var(--madera-clara);">
+                            <i class="bi bi-signpost-2-fill me-2 text-warning"></i>Rutas
+                        </h5>
+                        <div class="d-flex align-items-center gap-2">
+                            <input type="range" class="form-range" id="filtro-distancia" min="5" max="150" step="5" value="30" style="width: 100px;">
+                            <span id="valor-distancia" class="badge bg-secondary" style="width: 60px;">30 km</span>
                         </div>
                     </div>
+
+                    <div class="mb-4 scroll-rutas flex-grow-1" style="height: 0; overflow-y: auto; overflow-x: hidden; padding-right: 8px;">
+
+                        <div id="rutas-loading" class="row g-3">
+                            <div class="col-12" th:each="i : ${#numbers.sequence(1, 3)}">
+                                <div class="card bg-dark border-secondary p-3 placeholder-glow">
+                                    <span class="placeholder col-8 bg-secondary mb-3 rounded"></span>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="placeholder col-5 bg-secondary rounded"></span>
+                                        <span class="placeholder col-4 bg-secondary rounded"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="rutas-contenedor" class="row g-3 d-none">
+                        </div>
+
+                    </div>
+
+                    <div class="mt-auto flex-shrink-0 w-100 border-top border-secondary pt-4">
+                        <a th:if="${clima != null}"
+                           th:href="@{/hoteles/{id}/clima(id=${hotel.id})}"
+                           class="d-flex align-items-center bg-dark border border-secondary rounded-4 p-3 shadow-sm text-decoration-none widget-clima w-100 m-0"
+                           style="transition: all 0.2s ease;">
+
+                            <i class="bi fs-1 me-3" th:classappend="${clima.iconoCss}"></i>
+
+                            <div class="d-flex flex-column lh-1 border-end border-secondary pe-3 me-3">
+                                <span class="text-muted" style="font-size: 0.7rem; text-transform: uppercase;">Ahora</span>
+                                <span class="fw-bold text-white fs-3">
+                                    <span th:text="${clima.temperatura}">5.0</span>°C
+                                </span>
+                            </div>
+
+                            <span class="text-light fw-medium" th:text="${clima.descripcion}">Despejado</span>
+
+                            <i class="bi bi-chevron-right text-muted ms-auto fs-4"></i>
+                        </a>
+                    </div>
+
                 </div>
-
-                <div id="rutas-contenedor" class="row g-3 d-none" style="max-height: 400px; overflow-y: auto; overflow-x: hidden; padding-right: 5px;"></div>
             </div>
-
         </div>
     </div>
 
