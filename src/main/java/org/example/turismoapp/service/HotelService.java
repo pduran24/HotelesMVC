@@ -140,7 +140,9 @@ public class HotelService {
                 hotel.getPrecioNoche(),
                 urlsImagenes,
                 Math.round(media * 10.0) / 10.0,
-                listaResenas
+                listaResenas,
+                hotel.getLatitud(),
+                hotel.getLongitud()
         );
     }
 }
