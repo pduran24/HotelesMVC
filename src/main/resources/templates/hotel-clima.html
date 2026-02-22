@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" data-bs-theme="dark">
+
+<head th:replace="~{fragments/layout :: head('Previsión de Clima - ' + ${hotel.nombre})}"></head>
+
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="container pb-5">
+
+    <div class="mb-4">
+        <a th:href="@{/hoteles/{id}(id=${hotel.id})}" class="link-volver fw-bold">
+            ← Volver a <span th:text="${hotel.nombre}">Refugio</span>
+        </a>
+    </div>
+
+    <div class="d-flex align-items-center mb-4 border-bottom border-secondary pb-3">
+        <i class="bi bi-cloud-sun-fill display-4 text-warning me-3"></i>
+        <div>
+            <h2 class="fw-bold text-light mb-0">Previsión a 7 días</h2>
+            <p class="text-muted mb-0">Anticípate al clima de tu próxima escapada a la montaña.</p>
+        </div>
+    </div>
+
+    <div th:if="${pronostico == null or pronostico.isEmpty()}" class="alert alert-warning text-center" style="background-color: var(--tarjeta-oscura); border-color: var(--madera-clara);">
+        <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i> No se ha podido cargar la previsión meteorológica en este momento. Inténtalo más tarde.
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" th:unless="${pronostico == null or pronostico.isEmpty()}">
+
+        <div class="col" th:each="dia, iterStat : ${pronostico}">
+            <div class="card bg-dark border-secondary h-100 text-center"
+                 th:style="${iterStat.index == 0 ? 'border-color: var(--naranja-fuego) !important; box-shadow: 0 0 15px rgba(216, 67, 21, 0.2);' : ''}">
+
+                <div th:if="${iterStat.index == 0}" class="bg-rustico text-white py-1 small fw-bold" style="background-color: var(--naranja-fuego);">
+                    HOY
+                </div>
+
+                <div class="card-body py-4">
+                    <h5 class="card-title text-light fw-bold text-capitalize mb-3"
+                        th:text="${#temporals.format(dia.fecha, 'EEEE, dd MMM', new java.util.Locale('es', 'ES'))}">
+                        Lunes, 12 Oct
+                    </h5>
+
+                    <div class="mb-3">
+                        <i class="bi display-1" th:classappend="${dia.iconoCss}"></i>
+                    </div>
+
+                    <div class="d-flex justify-content-center align-items-center gap-3 mb-2">
+                        <div class="text-danger fw-bold fs-4" title="Temperatura Máxima">
+                            <span th:text="${dia.tempMax}">15</span>°
+                        </div>
+                        <div class="text-info fw-bold fs-5 opacity-75" title="Temperatura Mínima">
+                            <span th:text="${dia.tempMin}">5</span>°
+                        </div>
+                    </div>
+
+                    <p class="card-text text-muted mb-0 fw-medium" th:text="${dia.descripcion}">Despejado</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
