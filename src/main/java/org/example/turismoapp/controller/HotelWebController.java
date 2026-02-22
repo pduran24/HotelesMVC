@@ -3,6 +3,7 @@ package org.example.turismoapp.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.turismoapp.service.FavoritoService;
 import org.example.turismoapp.service.HotelService;
+import org.example.turismoapp.service.ResenaService;
 import org.example.turismoapp.service.ReservaService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +20,8 @@ public class HotelWebController {
     private final HotelService hotelService;
     private final ReservaService reservaService;
     private final FavoritoService favoritoService;
+    private final ResenaService resenaService;
+
 
     @GetMapping
     public String listarHoteles(Model model, Principal principal) {
@@ -36,7 +39,10 @@ public class HotelWebController {
         model.addAttribute("fechasOcupadas", reservaService.obtenerFechasOcupadasPorHotel(id));
 
         if (principal != null) {
-            model.addAttribute("favoritosIds", favoritoService.obtenerIdsFavoritos(principal.getName()));
+            String email = principal.getName();
+            model.addAttribute("favoritosIds", favoritoService.obtenerIdsFavoritos(email));
+
+            model.addAttribute("miResena", resenaService.obtenerResenaPorClienteYHotel(id, email));
         }
         return "hotel-detalle";
     }
