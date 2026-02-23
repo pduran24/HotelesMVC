@@ -26,7 +26,7 @@ public class MercadoService {
     /**
      * @Scheduled(fixedRate = 120000) -> Se ejecuta cada 120 segundos
      */
-    @Scheduled(fixedRate = 120000)
+    @Scheduled(fixedRate = 600000)
     @Transactional
     public void simularFluctuacionDePreciosDiaria() {
 

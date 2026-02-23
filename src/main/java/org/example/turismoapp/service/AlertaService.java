@@ -19,6 +19,7 @@ public class AlertaService {
 
     private static final Logger log = LoggerFactory.getLogger(AlertaService.class);
     private final AlertaPrecioRepository alertaRepository;
+    private final EmailService emailService;
 
     @Transactional
     public void crearAlerta(Cliente cliente, Hotel hotel, BigDecimal precioDeseado) {
@@ -42,6 +43,15 @@ public class AlertaService {
                     alerta.setNotificada(true);
                     alertaRepository.save(alerta);
 
+                    String asunto = "¡Oferta rastreada! " + hotel.getNombre() + " ha bajado de precio";
+                    String cuerpo = "Hola " + alerta.getCliente().getNombre() + ",\n\n"
+                            + "¡Grandes noticias! El precio de " + hotel.getNombre() + " acaba de bajar a "
+                            + hotel.getPrecioNoche() + "€.\n\n"
+                            + "Habías configurado una alerta si el precio bajaba de " + alerta.getPrecioObjetivo() + "€, "
+                            + "así que es tu momento ideal para reservar.\n\n"
+                            + "¡Entra en TurismoApp antes de que los precios vuelvan a subir!\n\n";
+
+                    emailService.enviarCorreoAsincrono(alerta.getCliente().getEmail(), asunto, cuerpo);
                 }
             }
         }
@@ -62,7 +72,6 @@ public class AlertaService {
         AlertaPrecio alerta = alertaRepository.findById(id).orElse(null);
         if (alerta != null && alerta.getCliente().getEmail().equals(email)) {
             alertaRepository.delete(alerta);
-            log.info("Alerta eliminada por el usuario {}", email);
         }
     }
 }
