@@ -32,6 +32,7 @@ public class ReservaService {
     private final ReservaRepository reservaRepository;
     private final HotelRepository hotelRepository;
     private final ClienteRepository clienteRepository;
+    private final EmailService emailService;
 
     /**
      * Recupera todas las reservas registradas.
@@ -94,6 +95,8 @@ public class ReservaService {
         reserva.setCliente(cliente);
 
         Reserva savedReserva = reservaRepository.save(reserva);
+        emailService.enviarBonoReserva(reserva);
+
         return mapToResponse(savedReserva);
     }
 

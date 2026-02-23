@@ -45,9 +45,6 @@ public class DataSeeder implements CommandLineRunner {
 
         crearFavoritos();
 
-        if (userRepository.count() == 0) {
-            crearAdmin();
-        }
         crearUsuariosLogin();
         crearImagenes();
         crearRutas();
@@ -130,14 +127,7 @@ public class DataSeeder implements CommandLineRunner {
     // Inyecta ReservaRepository arriba en el constructor del DataSeeder
 
 
-    private void crearAdmin() {
-        UserEntity admin = new UserEntity();
-        admin.setUsername("admin");
-        admin.setPassword("admin123");
-        admin.setRole("ADMIN");
-        userRepository.save(admin);
-        log.info("Usuario ADMIN creado.");
-    }
+
 
     private Hotel buildHotel(String nombre, String ubicacion, String descripcion, Integer estrellas,
                              String precioNoche, Double latitud, Double longitud,
