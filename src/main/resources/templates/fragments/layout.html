@@ -142,6 +142,17 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a th:href="@{/alertas}" class="nav-link">
+                        <i class="bi bi-bell-fill text-info fs-5"></i> Alertas de Precio
+
+                        <span class="badge bg-info text-dark ms-auto rounded-pill"
+                              th:text="${numAlertas}"
+                              th:if="${numAlertas > 0}">
+                            0
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a th:href="@{/favoritos}" class="nav-link">
                         <i class="bi bi-heart-fill text-danger fs-5"></i> Favoritos
 

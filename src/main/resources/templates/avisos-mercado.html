@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" data-bs-theme="dark">
+
+<head>
+    <th:block th:replace="~{fragments/layout :: head('Mis Alertas de Precio - TurismoApp')}"></th:block>
+
+    <style>
+        .scanner-wrapper {
+            position: relative;
+            padding: 40px 20px;
+            border-top: 1px solid rgba(13, 202, 240, 0.2);
+            border-bottom: 1px solid rgba(13, 202, 240, 0.2);
+            /* Un degradado sutil para dar profundidad al área de escaneo */
+            background: linear-gradient(180deg, rgba(13, 202, 240, 0.05) 0%, transparent 15%, transparent 85%, rgba(13, 202, 240, 0.05) 100%);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .scanner-line {
+            position: absolute;
+            height: 2px;
+            background: #0dcaf0;
+            box-shadow: 0 0 15px 3px rgba(13, 202, 240, 0.8);
+            border-radius: 50%;
+            z-index: 10;
+        }
+
+        .scanner-top {
+            top: -1px;
+            animation: scan-horizontal 3s ease-in-out infinite alternate;
+        }
+
+        .scanner-bottom {
+            bottom: -1px;
+            animation: scan-horizontal 3.5s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes scan-horizontal {
+            0% { left: 5%; width: 50px; opacity: 0.2; }
+            50% { width: 300px; opacity: 1; }
+            100% { left: calc(95% - 50px); width: 50px; opacity: 0.2; }
+        }
+
+        .badge-radar { animation: radar-pulse 2s infinite; }
+        @keyframes radar-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(13, 202, 240, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(13, 202, 240, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(13, 202, 240, 0); }
+        }
+
+        .radar-spin { animation: spin 3s linear infinite; display: inline-block; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .status-dot {
+            height: 10px; width: 10px; background-color: #198754;
+            border-radius: 50%; display: inline-block; animation: blink 1.5s infinite;
+        }
+        @keyframes blink { 50% { opacity: 0.3; } }
+    </style>
+</head>
+
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="container py-4 pb-5 mb-5">
+
+
+    <div class="d-flex align-items-center mb-5">
+        <i class="bi bi-bell-fill display-5 text-info me-3"></i>
+        <div>
+            <h2 class="mb-0 fw-bold" style="color: var(--madera-clara);">Mis Alertas de Precio</h2>
+            <p class="text-muted mb-0">Tus objetivos están siendo monitorizados en tiempo real.</p>
+        </div>
+    </div>
+
+    <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i><span th:text="${mensajeExito}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${misAlertas == null or misAlertas.isEmpty()}" class="alert alert-secondary text-center bg-transparent border-secondary py-5">
+        <i class="bi bi-radar radar-spin display-1 d-block mb-3 text-info opacity-75"></i>
+        <h4 class="text-light">Sin objetivos en el radar</h4>
+        <p class="text-muted">Busca un refugio que te guste y pulsa en "Avisarme si baja" para cazar gangas.</p>
+        <a th:href="@{/hoteles}" class="btn btn-outline-info mt-3 fw-bold rounded-pill px-4"><i class="bi bi-search me-2"></i>Explorar Refugios</a>
+    </div>
+
+    <div class="scanner-wrapper" th:if="${misAlertas != null and !misAlertas.isEmpty()}">
+
+        <div class="scanner-line scanner-top"></div>
+        <div class="scanner-line scanner-bottom"></div>
+
+        <div class="row row-cols-1 row-cols-md-2 justify-content-center g-4 position-relative" style="z-index: 5;">
+
+            <div class="col" th:each="alerta : ${misAlertas}" style="max-width: 450px;">
+                <div class="card h-100 bg-dark border-secondary shadow-lg hover-ruta" style="border-radius: 12px; overflow: hidden;">
+
+                    <div style="height: 140px; position: relative;">
+                        <img th:if="${alerta.hotel.imagenes != null and !alerta.hotel.imagenes.isEmpty()}"
+                             th:src="${alerta.hotel.imagenes[0].url}" class="w-100 h-100 object-fit-cover" style="filter: brightness(0.5);" alt="Hotel">
+
+                        <img th:unless="${alerta.hotel.imagenes != null and !alerta.hotel.imagenes.isEmpty()}"
+                             th:src="@{'https://picsum.photos/seed/' + ${alerta.hotel.id} + '/400/200'}" class="w-100 h-100 object-fit-cover" style="filter: brightness(0.5);" alt="Hotel">
+
+                        <span th:if="${alerta.notificada}" class="badge bg-success position-absolute top-0 start-0 m-3 fs-6 shadow border border-success">
+                            <i class="bi bi-check-circle-fill me-1"></i> ¡Objetivo Alcanzado!
+                        </span>
+                        <span th:unless="${alerta.notificada}" class="badge bg-info text-dark badge-radar position-absolute top-0 start-0 m-3 fs-6 shadow">
+                            <i class="bi bi-broadcast me-1"></i> Rastreando...
+                        </span>
+                    </div>
+
+                    <div class="card-body p-4 d-flex flex-column">
+                        <h5 class="fw-bold text-light mb-1 text-center"><a th:href="@{/hoteles/{id}(id=${alerta.hotel.id})}" class="text-white text-decoration-none" th:text="${alerta.hotel.nombre}">Hotel</a></h5>
+                        <p class="text-muted small mb-4 text-center"><i class="bi bi-geo-alt-fill text-danger"></i> <span th:text="${alerta.hotel.ubicacion}">Ubicación</span></p>
+
+                        <div class="d-flex justify-content-between align-items-center bg-secondary bg-opacity-25 p-3 rounded-3 border border-secondary mb-4">
+                            <div class="text-center w-50 border-end border-secondary pe-2">
+                                <small class="d-block text-muted fw-bold" style="font-size: 0.7rem;">PRECIO ACTUAL</small>
+                                <span class="fs-3 fw-bold" th:classappend="${alerta.hotel.precioNoche <= alerta.precioObjetivo} ? 'text-success' : 'text-light'" th:text="${alerta.hotel.precioNoche} + '€'">150€</span>
+                            </div>
+                            <div class="text-center w-50 ps-2">
+                                <small class="d-block text-info fw-bold" style="font-size: 0.7rem;">TU OBJETIVO</small>
+                                <span class="fs-3 fw-bold text-info" th:text="${alerta.precioObjetivo} + '€'">100€</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-auto d-flex gap-2">
+                            <a th:href="@{/hoteles/{id}(id=${alerta.hotel.id})}" class="btn btn-outline-light w-100 fw-bold">Ir al Refugio</a>
+
+                            <form th:id="'form-delete-' + ${alerta.id}" th:action="@{/alertas/eliminar}" method="post" class="h-100">
+                                <input type="hidden" name="alertaId" th:value="${alerta.id}">
+                                <button type="button" class="btn btn-outline-danger h-100 px-3 border-secondary"
+                                        title="Detener rastreo"
+                                        th:attr="onclick=|prepararEliminacion('${alerta.id}')|">
+                                    <i class="bi bi-trash3-fill"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="card bg-dark border-secondary shadow-lg mt-5" style="border-radius: 16px;" th:if="${misAlertas != null and !misAlertas.isEmpty()}">
+        <div class="card-header border-secondary p-4 d-flex justify-content-between align-items-center bg-transparent">
+            <h4 class="mb-0 text-light fw-bold font-monospace"><i class="bi bi-graph-up-arrow text-success me-2"></i>MERCADO EN TIEMPO REAL</h4>
+            <span class="badge bg-secondary text-light font-monospace border border-secondary px-3 py-2 shadow-sm">
+                <i class="bi bi-circle-fill text-success blink me-2" style="font-size: 0.5rem;"></i>LIVE
+            </span>
+        </div>
+        <div class="card-body p-4">
+            <div style="height: 350px; position: relative;">
+                <canvas id="marketChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalRadarDelete" tabindex="-1" aria-labelledby="modalRadarDeleteLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark border-danger shadow-lg" style="border-width: 2px; border-radius: 12px;">
+                <div class="modal-header border-bottom border-secondary bg-transparent">
+                    <h5 class="modal-title text-danger fw-bold font-monospace" id="modalRadarDeleteLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2 blink"></i>ALERTA DE SISTEMA
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <i class="bi bi-radar radar-spin display-1 d-block mb-3 text-danger opacity-75"></i>
+                    <h5 class="text-light mb-2">¿Detener el rastreo de este objetivo?</h5>
+                </div>
+                <div class="modal-footer border-top border-secondary justify-content-center bg-transparent gap-2">
+                    <button type="button" class="btn btn-outline-light fw-bold font-monospace px-4" data-bs-dismiss="modal">
+                        Mantener en Radar
+                    </button>
+                    <button type="button" class="btn btn-danger fw-bold font-monospace px-4 shadow" id="btnConfirmarEliminacion">
+                        <i class="bi bi-x-circle-fill me-2"></i>Sí, Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script th:inline="javascript">
+    let idFormularioPendiente = null;
+
+    function prepararEliminacion(alertaId) {
+        idFormularioPendiente = 'form-delete-' + alertaId;
+
+        const modalElement = document.getElementById('modalRadarDelete');
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('btnConfirmarEliminacion').addEventListener('click', function() {
+            if (idFormularioPendiente) {
+                document.getElementById(idFormularioPendiente).submit();
+            }
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+
+
+        const alertasData = [];
+
+        /*[# th:each="alerta : ${misAlertas}"]*/
+        alertasData.push({
+            nombre: /*[[${alerta.hotel.nombre}]]*/ 'Hotel',
+            precioNoche: /*[[${alerta.hotel.precioNoche}]]*/ 0
+        });
+        /*[/]*/
+
+        if (alertasData.length > 0 && document.getElementById('marketChart')) {
+            const ctx = document.getElementById('marketChart').getContext('2d');
+
+            const coloresNeon = ['#0dcaf0', '#20c997', '#ffc107', '#d84315', '#6f42c1'];
+
+            const datasets = alertasData.map((alerta, index) => {
+                const precioRealActual = alerta.precioNoche;
+                const dataSimulada = [];
+
+                let precioTemp = precioRealActual * (1 + (Math.random() * 0.4 - 0.2));
+                for(let i = 0; i < 6; i++) {
+                    dataSimulada.push(precioTemp.toFixed(2));
+                    precioTemp = precioTemp * (1 + (Math.random() * 0.1 - 0.05));
+                }
+                dataSimulada.push(precioRealActual);
+
+                const color = coloresNeon[index % coloresNeon.length];
+
+                return {
+                    label: alerta.nombre,
+                    data: dataSimulada,
+                    borderColor: color,
+                    backgroundColor: color + '1A',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#212529',
+                    pointBorderColor: color,
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 7
+                };
+            });
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['T-6h', 'T-5h', 'T-4h', 'T-3h', 'T-2h', 'T-1h', 'AHORA'],
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    scales: {
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: {
+                                color: '#adb5bd',
+                                font: { family: 'monospace' },
+                                callback: function(value) { return value + ' €'; }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#adb5bd', font: { family: 'monospace' } }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#f8f9fa', font: { family: 'monospace', size: 13 } },
+                            position: 'top'
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            titleFont: { family: 'monospace', size: 14 },
+                            bodyFont: { family: 'monospace', size: 13 },
+                            padding: 12,
+                            borderColor: 'rgba(255,255,255,0.1)',
+                            borderWidth: 1
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

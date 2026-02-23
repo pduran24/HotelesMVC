@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.turismoapp.dto.FechasOcupadasDTO;
 import org.example.turismoapp.model.Cliente;
 import org.example.turismoapp.repository.ClienteRepository;
-import org.example.turismoapp.repository.ReservaRepository;
+import org.example.turismoapp.service.AlertaService;
 import org.example.turismoapp.service.FavoritoService;
 import org.example.turismoapp.service.ReservaService;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,7 +19,8 @@ class GlobalController {
 
     private final ReservaService reservaService;
     private final FavoritoService favoritoService;
-    private final ClienteRepository clienteRepository; // ¡NUEVO!
+    private final ClienteRepository clienteRepository;
+    private final AlertaService alertaService;
 
     @ModelAttribute("usuarioLogueado")
     public Cliente cargarUsuarioGlobal(Principal principal) {
@@ -51,5 +52,13 @@ class GlobalController {
             return List.of();
         }
         return reservaService.obtenerFechasReservadasPorCliente(principal.getName());
+    }
+
+    @ModelAttribute("numAlertas")
+    public Integer contarAlertasGlobales(Principal principal) {
+        if (principal == null) {
+            return 0;
+        }
+        return alertaService.contarAlertasActivas(principal.getName());
     }
 }
