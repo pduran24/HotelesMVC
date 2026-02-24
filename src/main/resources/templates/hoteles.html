@@ -27,55 +27,81 @@
     <div class="row g-4">
 
         <div class="col-lg-3">
-            <div class="card bg-dark border-secondary shadow-sm sticky-top" style="top: 20px; border-radius: 12px;">
-                <div class="card-body p-4">
-                    <h5 class="fw-bold text-white mb-4"><i class="bi bi-funnel-fill text-warning me-2"></i>Filtros</h5>
+            <div class="sticky-top" style="top: 20px; max-height: calc(100vh - 40px); overflow-y: auto;">
 
-                    <form th:action="@{/hoteles}" method="get">
-
-                        <div class="mb-4">
-                            <label class="form-label text-muted small fw-bold">UBICACIÓN / VALLE</label>
-                            <input type="text" class="form-control bg-transparent text-white border-secondary" name="ubicacion" th:value="${ubicacionFiltro}" placeholder="Ej: Ordesa, Benasque...">
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label text-muted small fw-bold">PRECIO POR NOCHE (€)</label>
-                            <div class="d-flex gap-2 align-items-center">
-                                <input type="number" class="form-control bg-transparent text-white border-secondary" name="precioMin" th:value="${precioMinFiltro}" placeholder="Mín" min="0">
-                                <span class="text-muted">-</span>
-                                <input type="number" class="form-control bg-transparent text-white border-secondary" name="precioMax" th:value="${precioMaxFiltro}" placeholder="Máx" min="0">
+                <div class="card bg-dark border-secondary shadow-sm mb-4" style="border-radius: 12px;">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold text-white mb-4"><i class="bi bi-funnel-fill text-warning me-2"></i>Filtros</h5>
+                        <form th:action="@{/hoteles}" method="get">
+                            <div class="mb-4">
+                                <label class="form-label text-muted small fw-bold">UBICACIÓN / VALLE</label>
+                                <input type="text" class="form-control bg-transparent text-white border-secondary" name="ubicacion" th:value="${ubicacionFiltro}" placeholder="Ej: Ordesa, Benasque...">
                             </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label text-muted small fw-bold">ESTRELLAS MÍNIMAS</label>
-                            <select class="form-select bg-transparent text-white border-secondary" name="estrellas">
-                                <option value="" th:selected="${estrellasFiltro == null}">Cualquiera</option>
-                                <option value="5" th:selected="${estrellasFiltro == 5}">⭐⭐⭐⭐⭐ (5)</option>
-                                <option value="4" th:selected="${estrellasFiltro == 4}">⭐⭐⭐⭐ (4 o más)</option>
-                                <option value="3" th:selected="${estrellasFiltro == 3}">⭐⭐⭐ (3 o más)</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-4 border-top border-secondary pt-3">
-                            <label class="form-label text-muted small fw-bold mb-3">COMODIDADES</label>
-
-                            <div class="form-check form-switch mb-2">
-                                <input class="form-check-input" type="checkbox" role="switch" id="mascotas" name="admiteMascotas" value="true" th:checked="${mascotasFiltro}">
-                                <label class="form-check-label text-light" for="mascotas">🐶 Pet Friendly</label>                            </div>
-
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" role="switch" id="spa" name="tieneSpa" value="true" th:checked="${spaFiltro}">
-                                <label class="form-check-label text-light" for="spa">🌊 Zona de Aguas / Spa</label>
+                            <div class="mb-4">
+                                <label class="form-label text-muted small fw-bold">PRECIO POR NOCHE (€)</label>
+                                <div class="d-flex gap-2 align-items-center">
+                                    <input type="number" class="form-control bg-transparent text-white border-secondary" name="precioMin" th:value="${precioMinFiltro}" placeholder="Mín" min="0">
+                                    <span class="text-muted">-</span>
+                                    <input type="number" class="form-control bg-transparent text-white border-secondary" name="precioMax" th:value="${precioMaxFiltro}" placeholder="Máx" min="0">
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="d-grid gap-2 mt-5">
-                            <button type="submit" class="btn btn-rustico fw-bold">Aplicar Filtros</button>
-                            <a th:href="@{/hoteles}" class="btn btn-outline-secondary">Limpiar</a>
-                        </div>
-                    </form>
+                            <div class="mb-4">
+                                <label class="form-label text-muted small fw-bold">ESTRELLAS MÍNIMAS</label>
+                                <select class="form-select bg-transparent text-white border-secondary" name="estrellas">
+                                    <option value="" th:selected="${estrellasFiltro == null}">Cualquiera</option>
+                                    <option value="5" th:selected="${estrellasFiltro == 5}">⭐⭐⭐⭐⭐ (5)</option>
+                                    <option value="4" th:selected="${estrellasFiltro == 4}">⭐⭐⭐⭐ (4 o más)</option>
+                                    <option value="3" th:selected="${estrellasFiltro == 3}">⭐⭐⭐ (3 o más)</option>
+                                </select>
+                            </div>
+                            <div class="mb-4 border-top border-secondary pt-3">
+                                <label class="form-label text-muted small fw-bold mb-3">COMODIDADES</label>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="mascotas" name="admiteMascotas" value="true" th:checked="${mascotasFiltro}">
+                                    <label class="form-check-label text-light" for="mascotas">🐶 Pet Friendly</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="spa" name="tieneSpa" value="true" th:checked="${spaFiltro}">
+                                    <label class="form-check-label text-light" for="spa">🌊 Zona de Aguas / Spa</label>
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2 mt-5">
+                                <button type="submit" class="btn btn-rustico fw-bold">Aplicar Filtros</button>
+                                <a th:href="@{/hoteles}" class="btn btn-outline-secondary">Limpiar</a>
+                            </div>
+                        </form>
+                    </div>
                 </div>
+
+                <div class="card bg-dark border-secondary shadow-sm" style="border-radius: 12px; height: 420px; display: flex; flex-direction: column;">
+                    <div class="card-header border-secondary bg-transparent d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-robot text-warning me-2 fs-4"></i>
+                            <h6 class="mb-0 fw-bold text-white">Nivalis <span class="badge bg-success ms-2" style="font-size: 0.6rem;">Online</span></h6>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-danger border-0" id="btn-limpiar-chat" title="Borrar conversación">
+                            <i class="bi bi-trash3"></i>
+                        </button>
+                    </div>
+
+                    <div class="card-body overflow-auto" id="chat-mensajes" style="flex-grow: 1; display: flex; flex-direction: column; gap: 12px; padding: 15px;">
+                        <div class="d-flex justify-content-start">
+                            <div class="bg-secondary text-white rounded p-2" style="max-width: 85%; font-size: 0.9rem;">
+                                ¡Hola! ⛰️ Soy tu asistente virtual. ¿Te ayudo a elegir un refugio?
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer border-secondary bg-transparent p-2">
+                        <form id="chat-form" class="d-flex gap-2 m-0">
+                            <input type="text" id="chat-input" class="form-control form-control-sm bg-transparent text-white border-secondary" placeholder="Pregunta algo..." required autocomplete="off">
+                            <button type="submit" class="btn btn-sm btn-rustico" id="chat-submit">
+                                <i class="bi bi-send-fill"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -161,7 +187,26 @@
                 </div>
             </div>
 
-        </div> </div>
+            <div class="modal fade" id="modalLimpiarChat" tabindex="-1" aria-labelledby="modalLimpiarChatLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content bg-dark text-white border-secondary" style="border-radius: 12px;">
+                        <div class="modal-header border-secondary">
+                            <h5 class="modal-title fw-bold" id="modalLimpiarChatLabel">
+                                <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>Borrar conversación
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-light">
+                            ¿Estás seguro de que quieres que Nivalis olvide todo lo que habéis hablado? <br>
+                            <small class="text-muted">Esta acción no se puede deshacer.</small>
+                        </div>
+                        <div class="modal-footer border-secondary">
+                            <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-danger" id="btn-confirmar-limpiar">Sí, olvidar todo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -173,7 +218,6 @@
         const vistaLista = document.getElementById('vista-lista');
         const vistaMapa = document.getElementById('vista-mapa');
 
-        // Los datos se inyectan a Leaflet desde la misma variable que pinta las tarjetas
         const hoteles = /*[[${listaHoteles}]]*/ [];
 
         let mapaInicializado = false;
@@ -245,6 +289,117 @@
             vistaMapa.classList.add('d-none');
             vistaLista.classList.remove('d-none');
         });
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatMensajes = document.getElementById('chat-mensajes');
+        const chatSubmit = document.getElementById('chat-submit');
+        const btnLimpiar = document.getElementById('btn-limpiar-chat');
+
+        // 1. GESTIÓN DEL SESSION ID
+        let sessionId = sessionStorage.getItem('chat_session_id');
+        if (!sessionId) {
+            sessionId = 'sesion_' + Math.random().toString(36).substr(2, 9);
+            sessionStorage.setItem('chat_session_id', sessionId);
+        }
+
+        // 2. GESTIÓN DEL HISTORIAL VISUAL
+        let historial = JSON.parse(sessionStorage.getItem('chat_historial')) || [];
+
+        if (historial.length > 0) {
+            chatMensajes.innerHTML = '';
+            historial.forEach(msg => agregarMensajeUI(msg.texto, msg.emisor, null, false));
+        }
+
+        // 3. ENVIAR MENSAJE
+        chatForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const mensaje = chatInput.value.trim();
+            if (!mensaje) return;
+
+            agregarMensajeUI(mensaje, 'user');
+            chatInput.value = '';
+            chatInput.disabled = true;
+            chatSubmit.disabled = true;
+
+            const idCarga = 'carga-' + Date.now();
+            agregarMensajeUI('<i class="bi bi-three-dots"></i> Escribiendo...', 'bot', idCarga, false);
+
+            try {
+                const response = await fetch(`/api/chat/asistente?sessionId=${sessionId}&mensaje=${encodeURIComponent(mensaje)}`);
+                const respuestaIA = await response.text();
+
+                document.getElementById(idCarga).remove();
+                agregarMensajeUI(respuestaIA, 'bot');
+            } catch (error) {
+                document.getElementById(idCarga).remove();
+                agregarMensajeUI('❌ Sin conexión. Prueba en un rato.', 'bot', null, false);
+            } finally {
+                chatInput.disabled = false;
+                chatSubmit.disabled = false;
+                chatInput.focus();
+            }
+        });
+
+        // 4. BOTÓN DE LIMPIAR CONVERSACIÓN
+        const modalLimpiar = new bootstrap.Modal(document.getElementById('modalLimpiarChat'));
+        const btnConfirmarLimpiar = document.getElementById('btn-confirmar-limpiar');
+
+        btnLimpiar.addEventListener('click', function() {
+            modalLimpiar.show();
+        });
+
+        btnConfirmarLimpiar.addEventListener('click', async function() {
+            // 1. Escondemos el modal
+            modalLimpiar.hide();
+
+            sessionStorage.removeItem('chat_historial');
+            historial = [];
+
+            chatMensajes.innerHTML = `
+                <div class="d-flex justify-content-start">
+                    <div class="bg-secondary text-white rounded p-2" style="max-width: 85%; font-size: 0.9rem;">
+                        ¡Conversación borrada! 🏕️ ¿Empezamos de nuevo?
+                    </div>
+                </div>`;
+
+            // 4. Avisar a Spring Boot para que olvide el contexto en el servidor
+            try {
+                await fetch(`/api/chat/limpiar?sessionId=${sessionId}`, { method: 'DELETE' });
+            } catch(e) {
+                console.error("Error al limpiar memoria en el servidor");
+            }
+        });
+
+        // 5. FUNCIÓN AUXILIAR (Ahora guarda en sessionStorage)
+        function agregarMensajeUI(texto, emisor, id = null, guardar = true) {
+            const divFila = document.createElement('div');
+            divFila.className = emisor === 'user' ? 'd-flex justify-content-end' : 'd-flex justify-content-start';
+            if (id) divFila.id = id;
+
+            const divBurbuja = document.createElement('div');
+            divBurbuja.className = emisor === 'user'
+                ? 'text-dark rounded p-2 shadow-sm mb-2'
+                : 'bg-secondary text-white rounded p-2 shadow-sm mb-2';
+
+            if (emisor === 'user') {
+                divBurbuja.style.backgroundColor = 'var(--madera-clara)';
+            }
+
+            divBurbuja.style.maxWidth = '85%';
+            divBurbuja.style.fontSize = '0.9rem';
+            divBurbuja.innerHTML = texto;
+
+            divFila.appendChild(divBurbuja);
+            chatMensajes.appendChild(divFila);
+            chatMensajes.scrollTop = chatMensajes.scrollHeight;
+
+            if (guardar && !id) {
+                historial.push({texto: texto, emisor: emisor});
+                sessionStorage.setItem('chat_historial', JSON.stringify(historial));
+            }
+        }
     });
 </script>
 

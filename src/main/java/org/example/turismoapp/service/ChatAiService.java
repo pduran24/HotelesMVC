@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 public class ChatAiService {
 
     private final ChatClient chatClient;
+    private final InMemoryChatMemory chatMemory;
 
     public ChatAiService(ChatClient.Builder chatClientBuilder) {
 
+        this.chatMemory = new InMemoryChatMemory();
         this.chatClient = chatClientBuilder
-                .defaultAdvisors(new MessageChatMemoryAdvisor(new InMemoryChatMemory()))
+                .defaultAdvisors(new MessageChatMemoryAdvisor(this.chatMemory))
                 .build();
     }
 
@@ -32,5 +34,8 @@ public class ChatAiService {
                 .content();
     }
 
+    public void limpiarMemoria(String idConversacion) {
+        this.chatMemory.clear(idConversacion);
+    }
 
 }
