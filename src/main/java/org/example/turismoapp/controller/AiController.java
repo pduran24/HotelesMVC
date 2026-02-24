@@ -22,4 +22,10 @@ public class AiController {
 
         return chatAiService.hablarConElConserje(sessionId, mensaje);
     }
+
+    @org.springframework.web.bind.annotation.DeleteMapping("/limpiar")
+    public org.springframework.http.ResponseEntity<Void> limpiarConversacion(@RequestParam String sessionId) {
+        chatAiService.limpiarMemoria(sessionId);
+        return org.springframework.http.ResponseEntity.ok().build();
+    }
 }
