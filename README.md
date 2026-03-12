@@ -1,37 +1,35 @@
-TurismoApp REST API - Hoteles Pirenaicos
+# TurismoApp REST API - Hoteles Pirenaicos con IA ⛰️🤖
 
 ![Java](https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=java)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-brightgreen?style=for-the-badge&logo=spring)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?style=for-the-badge&logo=postgresql)
+![Spring AI](https://img.shields.io/badge/Spring_AI-1.0.0--M5-6DB33F?style=for-the-badge&logo=spring)
+![Llama 3](https://img.shields.io/badge/Meta_Llama_3.3-70B-0466C8?style=for-the-badge&logo=meta)
 ![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker)
-![Swagger](https://img.shields.io/badge/Swagger-OpenAPI_3-85EA2D?style=for-the-badge&logo=swagger)
 
-API REST robusta desarrollada en **Java 21** y **Spring Boot** para la gestión de hoteles y reservas en la zona de los Pirineos. Diseñada con una arquitectura multicapa clara, seguridad integrada y lista para ser desplegada mediante contenedores.
+API REST robusta desarrollada en **Java 21** y **Spring Boot** para la gestión de hoteles y reservas en la zona de los Pirineos. Diseñada con una arquitectura multicapa clara, seguridad integrada y **un asistente virtual nativo basado en Inteligencia Artificial (RAG)**.
 
-## Características Principales
+## 🌟 Características Principales
 
+* **Asistente IA con RAG (Retrieval-Augmented Generation):** Integración nativa de un chatbot conversacional que recomienda hoteles basándose **estrictamente en la base de datos local**.
+* **Vectorización Local (Zero-Latency):** Uso de modelos *ONNX Transformers* ejecutados en local para convertir entidades de dominio en *Embeddings* matemáticos sin depender de APIs externas.
+* **Memoria Conversacional:** El asistente mantiene el contexto del usuario durante la sesión mediante `InMemoryChatMemory` y `sessionStorage`.
 * **Arquitectura Multicapa:** Separación estricta entre Controladores, Lógica de Negocio (Servicios) y Acceso a Datos (Repositorios).
-* **Patrón DTO con Java Records:** Implementación ligera de Request/Response DTOs utilizando `Records` inmutables de Java 21, evitando librerías de mapeo pesadas y protegiendo el modelo de dominio.
-* **Seguridad:** Rutas protegidas mediante **Spring Security** (Basic Auth), separando el modelo de autenticación (`UserEntity`) del modelo de negocio (`Cliente`).
-* **Validaciones Robustas:** Uso de `Jakarta Validation` para asegurar la integridad de los datos en los endpoints (validación de fechas lógicas, campos nulos, etc.).
-* **Cálculo Dinámico:** La lógica de negocio abstrae la complejidad (ej. cálculo automático de días de reserva y precios totales basados en las fechas solicitadas).
-* **Data Seeder Automático:** Precarga automática de una base de datos realista con alojamientos del Pirineo para facilitar el testeo inmediato.
+* **Patrón DTO con Java Records:** Implementación ligera de Request/Response DTOs utilizando `Records` inmutables de Java 21.
+* **Seguridad:** Rutas protegidas mediante **Spring Security** (Basic Auth), separando el modelo de autenticación del modelo de negocio.
+* **Validaciones Robustas:** Uso de `Jakarta Validation` para asegurar la integridad de los datos.
 
-## Stack Tecnológico
+## 🛠️ Stack Tecnológico
 
 * **Core:** Java 21, Spring Boot 3.5
-* **Persistencia:** Spring Data JPA, Hibernate, PostgreSQL
-* **Seguridad:** Spring Security
-* **Herramientas:** Lombok, Springdoc OpenAPI (Swagger), Maven
-* **DevOps:** Docker, Docker Compose (Multi-stage build)
+* **Inteligencia Artificial:** Spring AI, Groq API (Llama 3.3 70B), ONNX Transformers (Local Embeddings).
+* **Persistencia:** Spring Data JPA, Hibernate, PostgreSQL + **PGVector**
+* **Frontend:** Thymeleaf, HTML5, Bootstrap 5, Vanilla JS (Fetch API)
+* **Herramientas:** Lombok, Maven
 
-## Despliegue con Docker (Recomendado)
+## 🚀 Instalación y Configuración Local
 
-El proyecto está completamente dockerizado. No necesitas instalar Java, Maven ni PostgreSQL en tu máquina local para ejecutarlo.
-
-1. Clona este repositorio.
-2. Abre una terminal en la raíz del proyecto.
-3. Ejecuta el siguiente comando para compilar y levantar los servicios:
-
-```bash
-docker compose up -d --build
+### 1. Variables de Entorno
+Para que el motor de IA funcione, necesitas una API Key gratuita de Groq. Configura la siguiente variable de entorno en tu sistema o en tu IDE antes de arrancar:
+```env
+GROQ_API_KEY=tu_clave_aqui
