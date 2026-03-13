@@ -8,7 +8,6 @@ import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 @Service
 public class ChatAiService {
@@ -25,7 +24,7 @@ public class ChatAiService {
                 .defaultAdvisors(
                         new MessageChatMemoryAdvisor(this.chatMemory),
 
-                        new QuestionAnswerAdvisor(vectorStore, SearchRequest.builder().topK(23).build())                )
+                        new QuestionAnswerAdvisor(vectorStore, SearchRequest.builder().topK(24).build())                )
                 .build();
     }
 

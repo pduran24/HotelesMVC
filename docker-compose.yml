@@ -10,5 +10,20 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+  backend:
+    build: .
+    container_name: turismo_app_backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/tourism_db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - MAIL=${MAIL}
+      - PASSWORD_MAIL=${PASSWORD_MAIL}
+    depends_on:
+      - postgres
+    restart: unless-stopped
 volumes:
   postgres_data:

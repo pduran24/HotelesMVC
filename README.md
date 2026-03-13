@@ -27,9 +27,33 @@ API REST robusta desarrollada en **Java 21** y **Spring Boot** para la gestión 
 * **Frontend:** Thymeleaf, HTML5, Bootstrap 5, Vanilla JS (Fetch API)
 * **Herramientas:** Lombok, Maven
 
-## 🚀 Instalación y Configuración Local
+## 🐳 Instalación y Despliegue con Docker (Recomendado)
 
-### 1. Variables de Entorno
-Para que el motor de IA funcione, necesitas una API Key gratuita de Groq. Configura la siguiente variable de entorno en tu sistema o en tu IDE antes de arrancar:
+El proyecto está completamente preparado para ser orquestado mediante contenedores, gestionando tanto la base de datos (con soporte nativo para PGVector) como el backend.
+
+### 1. Variables de Entorno (`.env`)
+Para que el motor de IA y el servicio de correos funcionen, crea un archivo llamado `.env` en la raíz del proyecto y añade tus credenciales. Docker las inyectará automáticamente en el contenedor:
 ```env
-GROQ_API_KEY=tu_clave_aqui
+GROQ_API_KEY=tu_clave_de_groq_aqui
+MAIL=tu_correo@gmail.com
+PASSWORD_MAIL=tu_contraseña_de_aplicacion
+```
+
+### 2. Compilar el Proyecto (Maven)
+El `Dockerfile` utiliza un enfoque ligero basado en JRE de Ubuntu (`jammy`), por lo que necesita el archivo `.jar` previamente compilado. En la raíz del proyecto, ejecuta:
+```
+./mvnw clean package -DskipTests
+```
+
+### 3. Levantar los Contenedores
+Una vez generado el archivo compilado en la carpeta `target/`, levanta toda la infraestructura con:
+```
+docker compose up -d --build
+```
+La aplicación estará disponible en `http://localhost:8080`.
+
+### 4. Ingesta de Datos para la IA (Vectorización)
+Para que el asistente virtual "BujarueloBot" pueda leer y recomendar los alojamientos, es necesario transformar las filas relacionales de PostgreSQL en vectores matemáticos. Con la aplicación arrancada, ejecuta una petición a este endpoint:
+```
+http://localhost:8080/api/chat/admin/ingestar
+```**

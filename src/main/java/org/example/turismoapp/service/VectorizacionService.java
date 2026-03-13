@@ -23,7 +23,7 @@ public class VectorizacionService {
     private final VectorStore vectorStore; // Herramienta de Spring AI para guardar vectores
 
     /**
-     * Este método lee todos los hoteles, los convierte a texto semántico y los guarda en PGVector.
+     * Este metodo lee todos los hoteles, los convierte a texto semántico y los guarda en PGVector.
      */
     public void cargarHotelesEnMemoriaVectorial() {
         log.info("Iniciando el proceso de vectorización de hoteles...");
@@ -32,7 +32,6 @@ public class VectorizacionService {
         List<Document> documentosAI = new ArrayList<>();
 
         for (Hotel hotel : hoteles) {
-            // 1. Convertimos los datos fríos en un párrafo semántico que la IA pueda entender
             String textoSemantico = String.format(
                     "Refugio/Hotel: %s. Ubicado en: %s. Tiene %d estrellas. " +
                             "Precio por noche: %s euros. Admite mascotas: %s. Tiene zona de aguas o Spa: %s. " +
@@ -46,20 +45,16 @@ public class VectorizacionService {
                     hotel.getDescripcion()
             );
 
-            // 2. Metadatos: Claves extra que guardamos junto al vector para facilitar el filtrado después
             Map<String, Object> metadatos = Map.of(
                     "hotel_id", hotel.getId(),
                     "nombre", hotel.getNombre(),
                     "ubicacion", hotel.getUbicacion()
             );
 
-            // 3. Creamos el Documento de Spring AI
             Document doc = new Document(textoSemantico, metadatos);
             documentosAI.add(doc);
         }
 
-        // 4. ¡Magia! Guardamos todos los documentos en la base de datos.
-        // Spring AI, por debajo, usa el modelo local de Transformers para convertir el texto en números de 384 dimensiones.
         vectorStore.add(documentosAI);
 
         log.info("✅ ¡Proceso terminado! Se han vectorizado {} hoteles.", documentosAI.size());
