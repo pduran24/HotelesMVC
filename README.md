@@ -7,7 +7,7 @@
 ![Llama 3](https://img.shields.io/badge/Meta_Llama_3.3-70B-0466C8?style=for-the-badge&logo=meta)
 ![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker)
 
-API REST robusta desarrollada en **Java 21** y **Spring Boot** para la gestión de hoteles y reservas en la zona de los Pirineos. Diseñada con una arquitectura multicapa clara, seguridad integrada y **un asistente virtual nativo basado en Inteligencia Artificial (RAG)**.
+API Web robusta desarrollada en **Java 21** y **Spring Boot** para la gestión de hoteles y reservas en la zona de los Pirineos. Diseñada con una arquitectura multicapa clara, seguridad integrada y **un asistente virtual nativo basado en Inteligencia Artificial (RAG)**.
 
 ## 🌟 Características Principales
 
