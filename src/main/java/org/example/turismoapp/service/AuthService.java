@@ -5,6 +5,7 @@ import org.example.turismoapp.dto.ClienteRequest;
 import org.example.turismoapp.exception.UsuarioYaExistenteException;
 import org.example.turismoapp.model.UserEntity;
 import org.example.turismoapp.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final ClienteService clienteService;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Registra un nuevo usuario en el sistema, creando sus credenciales de acceso
@@ -36,7 +38,7 @@ public class AuthService {
 
         UserEntity newUser = new UserEntity();
         newUser.setUsername(email);
-        newUser.setPassword(password);
+        newUser.setPassword(passwordEncoder.encode(password));
         newUser.setRole("USER");
         userRepository.save(newUser);
 

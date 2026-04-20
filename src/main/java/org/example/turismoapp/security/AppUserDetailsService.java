@@ -38,7 +38,7 @@ public class AppUserDetailsService implements UserDetailsService {
 
 
         return User.withUsername(username)
-                .password("{noop}" + currentUser.get().getPassword())
+                .password(currentUser.get().getPassword())
                 .roles(currentUser.get().getRole())
                 .build();
     }
