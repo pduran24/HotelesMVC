@@ -8,7 +8,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -21,14 +20,12 @@ public class DataSeeder implements CommandLineRunner {
 
     private final HotelRepository hotelRepository;
     private final UserRepository userRepository;
-    private final ClienteRepository clienteRepository;
     private final RutaRepository rutaRepository;
     private final PasswordEncoder passwordEncoder;
 
     public DataSeeder(HotelRepository hotelRepository, UserRepository userRepository, ClienteRepository clienteRepository, ReservaRepository reservaRepository, RutaRepository rutaRepository, PasswordEncoder passwordEncoder) {
         this.hotelRepository = hotelRepository;
         this.userRepository = userRepository;
-        this.clienteRepository = clienteRepository;
         this.rutaRepository = rutaRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -42,11 +39,7 @@ public class DataSeeder implements CommandLineRunner {
             crearHoteles();
         }
 
-        if (clienteRepository.count() == 0) {
-            crearClientes();
-        }
 
-        crearFavoritos();
 
         crearUsuariosLogin();
         crearImagenes();
@@ -93,39 +86,8 @@ public class DataSeeder implements CommandLineRunner {
         hotelRepository.saveAll(hoteles);
     }
 
-    private void crearClientes() {
-        // CLIENTE 1: Pablo
-        Cliente c1 = new Cliente();
-        c1.setNombre("Pablo Viajero");
-        c1.setEmail("pablo@test.com");
-        c1.setFavoritos(new java.util.HashSet<>());
 
-        // CLIENTE 2: Ana
-        Cliente c2 = new Cliente();
-        c2.setNombre("Ana Montañera");
-        c2.setEmail("ana@test.com");
-        c2.setFavoritos(new java.util.HashSet<>());
 
-        clienteRepository.saveAll(List.of(c1, c2));
-        log.info("Clientes ficticios creados con email.");
-    }
-
-    private void crearFavoritos() {
-        if (clienteRepository.count() == 0) return;
-
-        Cliente pablo = clienteRepository.findAll().getFirst();
-
-        Hotel laFlorida = hotelRepository.findByNombre("Gran Hotel La Florida").orElse(null);
-        Hotel goriz = hotelRepository.findByNombre("Refugio de Góriz").orElse(null);
-
-        if (laFlorida != null && goriz != null) {
-            pablo.getFavoritos().add(laFlorida);
-            pablo.getFavoritos().add(goriz);
-
-            clienteRepository.save(pablo);
-            log.info("✅ Favoritos inicializados: A Pablo le gustan 2 hoteles.");
-        }
-    }
 
     // Inyecta ReservaRepository arriba en el constructor del DataSeeder
 
@@ -153,14 +115,6 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private void crearUsuariosLogin() {
-        // Usuario para Pablo
-        if (!userRepository.existsByUsername("pablo@test.com")) {
-            UserEntity userPablo = new UserEntity();
-            userPablo.setUsername("pablo@test.com");
-            userPablo.setPassword(passwordEncoder.encode("1234"));
-            userPablo.setRole("USER");
-            userRepository.save(userPablo);
-        }
 
         // Usuario Admin
         if (!userRepository.existsByUsername("admin")) {
