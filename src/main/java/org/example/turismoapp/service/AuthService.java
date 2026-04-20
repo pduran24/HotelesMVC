@@ -27,13 +27,13 @@ public class AuthService {
      * @param nombre Nombre de usuario.
      * @param email Email del usuario
      * @param password Contraseña plana.
-     * @throws RuntimeException si el usuario ya existe en la base de datos.
+     * @throws UsuarioYaExistenteException si el usuario ya existe en la base de datos.
      */
     @Transactional
     public void registrarNuevoUsuario(String nombre, String email, String password) { // <--- 3 Argumentos
 
         if (userRepository.findByUsername(email).isPresent()) {
-            throw new RuntimeException("El correo electrónico ya está registrado");
+            throw new UsuarioYaExistenteException("El correo electrónico ya está registrado");
         }
 
         UserEntity newUser = new UserEntity();
