@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.turismoapp.model.*;
 import org.example.turismoapp.repository.*;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,12 +23,14 @@ public class DataSeeder implements CommandLineRunner {
     private final UserRepository userRepository;
     private final ClienteRepository clienteRepository;
     private final RutaRepository rutaRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public DataSeeder(HotelRepository hotelRepository, UserRepository userRepository, ClienteRepository clienteRepository, ReservaRepository reservaRepository, RutaRepository rutaRepository) {
+    public DataSeeder(HotelRepository hotelRepository, UserRepository userRepository, ClienteRepository clienteRepository, ReservaRepository reservaRepository, RutaRepository rutaRepository, PasswordEncoder passwordEncoder) {
         this.hotelRepository = hotelRepository;
         this.userRepository = userRepository;
         this.clienteRepository = clienteRepository;
         this.rutaRepository = rutaRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -154,7 +157,7 @@ public class DataSeeder implements CommandLineRunner {
         if (!userRepository.existsByUsername("pablo@test.com")) {
             UserEntity userPablo = new UserEntity();
             userPablo.setUsername("pablo@test.com");
-            userPablo.setPassword("1234"); // En un caso real, iría encriptada
+            userPablo.setPassword(passwordEncoder.encode("1234"));
             userPablo.setRole("USER");
             userRepository.save(userPablo);
         }
@@ -163,7 +166,7 @@ public class DataSeeder implements CommandLineRunner {
         if (!userRepository.existsByUsername("admin")) {
             UserEntity admin = new UserEntity();
             admin.setUsername("admin");
-            admin.setPassword("admin123");
+            admin.setPassword(passwordEncoder.encode("admin123"));
             admin.setRole("ADMIN");
             userRepository.save(admin);
         }
