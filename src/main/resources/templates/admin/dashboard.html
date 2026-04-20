@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" data-bs-theme="dark">
+
+<head th:replace="~{fragments/layout :: head('Panel de Administración - TurismoApp')}"></head>
+
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="container pb-5">
+
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <i class="bi bi-shield-lock-fill text-warning fs-2"></i>
+        <div>
+            <h2 class="mb-0 fw-bold" style="color: var(--madera-clara);">Panel de Administración</h2>
+            <p class="text-muted mb-0 mt-1">Visión general del sistema</p>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                         style="width:56px;height:56px;background:rgba(255,193,7,0.15);">
+                        <i class="bi bi-people-fill text-warning fs-4"></i>
+                    </div>
+                    <div>
+                        <div class="fs-2 fw-bold text-white" th:text="${totalUsuarios}">0</div>
+                        <div class="text-muted small">Usuarios registrados</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                         style="width:56px;height:56px;background:rgba(13,202,240,0.15);">
+                        <i class="bi bi-person-lines-fill text-info fs-4"></i>
+                    </div>
+                    <div>
+                        <div class="fs-2 fw-bold text-white" th:text="${totalClientes}">0</div>
+                        <div class="text-muted small">Perfiles de cliente</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                         style="width:56px;height:56px;background:rgba(25,135,84,0.15);">
+                        <i class="bi bi-house-door-fill text-success fs-4"></i>
+                    </div>
+                    <div>
+                        <div class="fs-2 fw-bold text-white" th:text="${totalHoteles}">0</div>
+                        <div class="text-muted small">Alojamientos</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                         style="width:56px;height:56px;background:rgba(220,53,69,0.15);">
+                        <i class="bi bi-calendar2-check-fill text-danger fs-4"></i>
+                    </div>
+                    <div>
+                        <div class="fs-2 fw-bold text-white" th:text="${totalReservas}">0</div>
+                        <div class="text-muted small">Reservas totales</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${exito}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:text="${exito}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="card bg-dark border-secondary">
+        <div class="card-header border-secondary d-flex align-items-center gap-2">
+            <i class="bi bi-people text-warning"></i>
+            <span class="fw-bold">Usuarios del sistema</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-dark table-hover mb-0">
+                    <thead>
+                        <tr class="text-muted small">
+                            <th class="ps-4">ID</th>
+                            <th>Usuario</th>
+                            <th>Rol</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="u : ${usuarios}">
+                            <td class="ps-4 text-muted" th:text="${u.id}">1</td>
+                            <td th:text="${u.username}">usuario@email.com</td>
+                            <td>
+                                <span th:if="${u.role == 'ADMIN'}" class="badge bg-warning text-dark">ADMIN</span>
+                                <span th:unless="${u.role == 'ADMIN'}" class="badge bg-secondary">USER</span>
+                            </td>
+                            <td class="text-end pe-3">
+                                <form th:if="${u.role != 'ADMIN'}"
+                                      th:action="@{/admin/usuarios/{id}/eliminar(id=${u.id})}"
+                                      method="post"
+                                      th:id="'form-eliminar-' + ${u.id}">
+                                    <button type="button"
+                                            class="btn btn-outline-danger btn-sm btn-eliminar-usuario"
+                                            th:data-id="${u.id}"
+                                            th:data-username="${u.username}">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalConfirmar" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title fw-bold text-danger">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmar eliminación
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-1">¿Eliminar al usuario <strong id="modal-username" class="text-warning"></strong>?</p>
+                    <p class="text-muted small mb-0">Se borrarán también sus reservas, reseñas y favoritos. Esta acción no se puede deshacer.</p>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="btn-confirmar-eliminar">
+                        <i class="bi bi-trash3 me-1"></i>Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.btn-eliminar-usuario').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var id = this.getAttribute('data-id');
+                var username = this.getAttribute('data-username');
+                document.getElementById('modal-username').textContent = username;
+                document.getElementById('btn-confirmar-eliminar').onclick = function () {
+                    document.getElementById('form-eliminar-' + id).submit();
+                };
+                new bootstrap.Modal(document.getElementById('modalConfirmar')).show();
+            });
+        });
+    </script>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -125,6 +125,11 @@
             <hr class="border-secondary opacity-50">
 
             <ul class="nav flex-column gap-2 mb-4">
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a th:href="@{/admin}" class="nav-link text-warning fw-bold">
+                        <i class="bi bi-shield-lock-fill fs-5"></i> Panel de Administración
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a th:href="@{/perfil}" class="nav-link">
                         <i class="bi bi-person-vcard fs-5"></i> Mi Perfil Completo
