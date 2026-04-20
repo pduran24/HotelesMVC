@@ -5,11 +5,14 @@ import org.example.turismoapp.model.Hotel;
 import org.example.turismoapp.repository.HotelRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -79,8 +82,9 @@ class HotelServiceTest {
 
     @Test
     void findAll_devuelveListaMapeada() {
-        when(hotelRepository.findAll(any(org.springframework.data.jpa.domain.Specification.class)))
-                .thenReturn(java.util.List.of(hotelDePrueba()));
+        when(hotelRepository.findAll(
+                    ArgumentMatchers.<Specification<Hotel>>any()
+                )).thenReturn(List.of(hotelDePrueba()));
 
         var resultado = hotelService.buscarConFiltros(null, null, null, null, null, null);
 
