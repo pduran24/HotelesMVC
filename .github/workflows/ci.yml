@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: Grant execute permission to mvnw
+        run: chmod +x mvnw
+
+      - name: Build and run tests
+        run: ./mvnw clean verify -Dspring.profiles.active=test
+        env:
+          GROQ_API_KEY: test-dummy-key
+          MAIL: test@test.com
+          MAIL_PASSWORD: dummy
