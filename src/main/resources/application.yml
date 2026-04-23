@@ -1,25 +1,16 @@
 spring:
   application:
     name: turismoApp
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/tourism_db
-    username: root
-    password: root
     driver-class-name: org.postgresql.Driver
 
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-
-  thymeleaf:
-    cache: false
 
 
   mail:
@@ -45,7 +36,6 @@ spring:
           temperature: 0.7
     vectorstore:
       pgvector:
-        initialize-schema: true
         index-type: HNSW
         distance-type: COSINE_DISTANCE
         dimensions: 384
